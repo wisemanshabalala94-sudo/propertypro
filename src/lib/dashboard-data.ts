@@ -9,7 +9,7 @@ export async function getTenantDashboardData() {
 
   const { data: tenant } = await supabase
     .from("profiles")
-    .select("id, organization_id, full_name, email")
+    .select("id, organization_id, full_name, email, tenant_reference_code")
     .eq("role", "tenant")
     .order("created_at", { ascending: true })
     .limit(1)
@@ -54,7 +54,7 @@ export async function getTenantDashboardData() {
     tenant,
     summary: {
       currentDue: unpaidInvoice ? currency(Number(unpaidInvoice.amount_due)) : "R0",
-      reference: unpaidInvoice?.payment_reference_code ?? "Not assigned yet",
+      reference: tenant.tenant_reference_code ?? unpaidInvoice?.payment_reference_code ?? "Not assigned yet",
       openRepairs: maintenance?.filter((item) => item.status !== "resolved" && item.status !== "cancelled").length ?? 0,
       documentsComplete: latestApplicationId
         ? `${filteredDocuments.filter((item) => item.ai_status === "accepted").length}/${filteredDocuments.length || 0}`
@@ -107,7 +107,11 @@ export async function getOwnerDashboardData() {
     { data: properties },
     { data: teamMembers },
     { data: reports },
-    { data: maintenance }
+    { data: maintenance },
+    { data: subscription },
+    { data: invitations },
+    { data: payouts },
+    { data: messages }
   ] = await Promise.all([
     supabase.from("invoices").select("amount_due, amount_paid, status").eq("organization_id", owner.organization_id),
     supabase
@@ -131,7 +135,30 @@ export async function getOwnerDashboardData() {
     supabase
       .from("maintenance_requests")
       .select("property_id, status")
+      .eq("organization_id", owner.organization_id),
+    supabase
+      .from("owner_subscriptions")
+      .select("monthly_fee, status, next_billing_date")
       .eq("organization_id", owner.organization_id)
+      .maybeSingle(),
+    supabase
+      .from("team_invitations")
+      .select("invited_email, role, status")
+      .eq("organization_id", owner.organization_id)
+      .order("created_at", { ascending: false })
+      .limit(6),
+    supabase
+      .from("worker_payouts")
+      .select("worker_name, role_label, amount, status")
+      .eq("organization_id", owner.organization_id)
+      .order("created_at", { ascending: false })
+      .limit(6),
+    supabase
+      .from("in_app_messages")
+      .select("subject, message_type, created_at")
+      .eq("organization_id", owner.organization_id)
+      .order("created_at", { ascending: false })
+      .limit(6)
   ]);
 
   const collected = (invoices ?? []).reduce((sum, invoice) => sum + Number(invoice.amount_paid ?? 0), 0);
@@ -170,6 +197,36 @@ export async function getOwnerDashboardData() {
         title: report.report_type,
         value: typeof report.metrics?.headline === "string" ? String(report.metrics.headline) : report.period_label,
         detail: `Latest ${report.report_type} snapshot`
+      })) ?? [],
+    subscription: subscription
+      ? {
+          monthlyFee: currency(Number(subscription.monthly_fee)),
+          status: subscription.status,
+          nextBillingDate: subscription.next_billing_date ?? "Not scheduled"
+        }
+      : {
+          monthlyFee: currency(1170),
+          status: "not_started",
+          nextBillingDate: "Set up in owner portal"
+        },
+    invitations:
+      invitations?.map((item) => ({
+        email: item.invited_email,
+        role: item.role,
+        status: item.status
+      })) ?? [],
+    workerPayouts:
+      payouts?.map((item) => ({
+        workerName: item.worker_name,
+        roleLabel: item.role_label,
+        amount: currency(Number(item.amount)),
+        status: item.status
+      })) ?? [],
+    messages:
+      messages?.map((item) => ({
+        subject: item.subject,
+        type: item.message_type,
+        createdAt: item.created_at
       })) ?? []
   };
 }
@@ -183,7 +240,8 @@ export async function getAdminDashboardData() {
     { count: tenantsCount },
     { count: buildingsCount },
     { data: screenings },
-    { data: properties }
+    { data: properties },
+    { data: signupRequests }
   ] = await Promise.all([
     supabase.from("organizations").select("*", { count: "exact", head: true }),
     supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "owner"),
@@ -194,7 +252,12 @@ export async function getAdminDashboardData() {
       .select("id, affordability_score, status, ai_summary")
       .order("created_at", { ascending: false })
       .limit(6),
-    supabase.from("properties").select("name").order("created_at", { ascending: false }).limit(5)
+    supabase.from("properties").select("name").order("created_at", { ascending: false }).limit(5),
+    supabase
+      .from("property_signup_requests")
+      .select("applicant_name, requested_role, status")
+      .order("created_at", { ascending: false })
+      .limit(6)
   ]);
 
   return {
@@ -215,6 +278,34 @@ export async function getAdminDashboardData() {
       properties?.map((property, index) => ({
         step: property.name,
         state: index === 0 ? "In progress" : "Done"
+      })) ?? [],
+    signupRequests:
+      signupRequests?.map((request) => ({
+        applicant: request.applicant_name,
+        role: request.requested_role,
+        status: request.status
       })) ?? []
   };
+}
+
+export async function getPublicPropertyDirectory() {
+  const supabase = createServiceClient();
+  const { data } = await supabase
+    .from("property_directory_settings")
+    .select("property_id, slug, signup_notes, properties:property_id(name, address)")
+    .eq("is_public_signup_enabled", true)
+    .order("created_at", { ascending: false });
+
+  return ((data ?? []) as Array<{
+    property_id: string;
+    slug: string;
+    signup_notes: string | null;
+    properties: { name: string; address: string | null } | Array<{ name: string; address: string | null }> | null;
+  }>).map((item) => ({
+    id: item.property_id,
+    slug: item.slug,
+    signupNotes: item.signup_notes,
+    name: Array.isArray(item.properties) ? item.properties[0]?.name ?? "Unknown property" : item.properties?.name ?? "Unknown property",
+    address: Array.isArray(item.properties) ? item.properties[0]?.address ?? "" : item.properties?.address ?? ""
+  }));
 }

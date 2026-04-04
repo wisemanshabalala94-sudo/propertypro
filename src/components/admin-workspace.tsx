@@ -19,6 +19,11 @@ type AdminDashboardData = {
     step: string;
     state: string;
   }>;
+  signupRequests: Array<{
+    applicant: string;
+    role: string;
+    status: string;
+  }>;
 } | null;
 
 const tabs = ["Collections", "Screening", "Setup", "Automation"] as const;
@@ -63,6 +68,7 @@ export function AdminWorkspace({ data }: { data?: AdminDashboardData }) {
     { step: "Organization", state: "Pending" },
     { step: "Property and units", state: "Pending" }
   ];
+  const signupRequests = data?.signupRequests ?? [];
 
   async function submitJson(event: FormEvent<HTMLFormElement>, path: string, onResult: (message: string) => void) {
     event.preventDefault();
@@ -237,6 +243,25 @@ export function AdminWorkspace({ data }: { data?: AdminDashboardData }) {
                   </div>
                 </article>
               ))}
+            </div>
+
+            <div className="mt-6 rounded-[1.6rem] border border-white/10 bg-white/5 p-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-mist">Signup requests from landing page</p>
+              <div className="mt-3 space-y-3">
+                {signupRequests.length ? signupRequests.map((request) => (
+                  <article key={`${request.applicant}-${request.role}`} className="rounded-[1.2rem] border border-white/10 bg-white/5 p-3">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-semibold">{request.applicant}</p>
+                        <p className="text-sm text-fog">{request.role}</p>
+                      </div>
+                      <span className="rounded-full border border-white/10 px-3 py-1 text-xs uppercase tracking-[0.16em] text-mist">{request.status}</span>
+                    </div>
+                  </article>
+                )) : (
+                  <p className="text-sm text-fog">No signup requests yet. Public property signups will show here.</p>
+                )}
+              </div>
             </div>
           </div>
 

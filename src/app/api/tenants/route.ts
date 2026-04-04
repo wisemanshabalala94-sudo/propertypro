@@ -35,7 +35,8 @@ export async function POST(request: Request) {
       .from("profiles")
       .update({
         full_name: body.fullName,
-        is_verified: true
+        is_verified: true,
+        tenant_reference_code: `PPR-${authUser.user.id.replaceAll("-", "").slice(0, 4).toUpperCase()}-${authUser.user.id.replaceAll("-", "").slice(4, 8).toUpperCase()}`
       })
       .eq("id", authUser.user.id)
       .select()
@@ -71,4 +72,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
