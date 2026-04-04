@@ -2,11 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 
 const navItems = [
-  { href: "/", label: "Home" },
   { href: "/onboarding?role=owner", label: "Owner Sign Up" },
   { href: "/onboarding?role=tenant", label: "Tenant Sign Up" },
-  { href: "/auth", label: "Staff Login" },
-  { href: "/owner/dashboard", label: "Owner Portal" }
+  { href: "/auth", label: "Login" }
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -18,8 +16,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#081423e3] backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-6">
           <div>
-            <p className="font-display text-sm uppercase tracking-[0.34em] text-mist">PropertyPro</p>
-            <p className="text-sm text-fog">Owner-led property operations for rent, approvals, onboarding, and cash integrity.</p>
+            <Link href="/" className="font-display text-2xl font-semibold tracking-[-0.03em] text-white">
+              PropertyPro
+            </Link>
           </div>
           <nav className="flex flex-wrap gap-2">
             {navItems.map((item) => (
