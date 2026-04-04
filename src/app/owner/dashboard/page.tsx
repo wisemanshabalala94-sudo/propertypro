@@ -14,37 +14,39 @@ const financeFlow = [
 
 export default function OwnerDashboardPage() {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
-      <section className="rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-panel">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-dark">Owner dashboard</p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-ink">Protect rental income before any money is used.</h1>
-        <p className="mt-4 max-w-3xl text-base leading-8 text-slate-700">
+    <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
+      <section className="glass-panel gradient-stroke rounded-[2.5rem] p-8 md:p-10">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-mist">Owner dashboard</p>
+        <h1 className="font-display mt-3 text-4xl font-semibold tracking-[-0.04em] text-white md:text-6xl">
+          Control cash with the confidence of a private command deck.
+        </h1>
+        <p className="mt-4 max-w-3xl text-base leading-8 text-fog">
           Owners see live collection performance, outstanding arrears, and any payout or operating debit that needs approval
           before the funds leave the business account.
         </p>
         <div className="mt-8 grid gap-4 md:grid-cols-4">
-          <DashboardCard title="Collected this month" value="R214,500" detail="Confirmed receipts across all active leases." />
-          <DashboardCard title="Outstanding" value="R34,700" detail="Unpaid and partially paid invoices." />
-          <DashboardCard title="Reserved savings" value="R2,100" detail="Wiseworx administration reserve tracked separately." />
-          <DashboardCard title="Pending approvals" value="2" detail="No disbursement should happen before sign-off." />
+          <DashboardCard title="Collected this month" value="R214,500" detail="Confirmed receipts across all active leases." tone="dark" />
+          <DashboardCard title="Outstanding" value="R34,700" detail="Unpaid and partially paid invoices." tone="dark" />
+          <DashboardCard title="Reserved savings" value="R2,100" detail="Wiseworx administration reserve tracked separately." tone="dark" />
+          <DashboardCard title="Pending approvals" value="2" detail="No disbursement should happen before sign-off." tone="dark" />
         </div>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-panel">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Approval queue</p>
-          <h2 className="mt-2 text-2xl font-semibold text-ink">Requests waiting on ownership</h2>
+        <div className="light-panel gradient-stroke rounded-[2.4rem] p-6 md:p-8">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-fog">Approval queue</p>
+          <h2 className="font-display mt-2 text-3xl font-semibold tracking-[-0.03em] text-ink">Requests waiting on ownership</h2>
           <div className="mt-6 space-y-4">
             {approvalQueue.map((item) => (
-              <article key={item.title} className="rounded-3xl border border-slate-200 bg-sand p-5">
+              <article key={item.title} className="rounded-[1.8rem] border border-slate-200 bg-white p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-lg font-semibold text-ink">{item.title}</p>
-                    <p className="text-sm text-slate-600">{item.status}</p>
+                    <p className="font-display text-2xl font-semibold tracking-[-0.03em] text-ink">{item.title}</p>
+                    <p className="text-sm text-fog">{item.status}</p>
                   </div>
                   <div className="flex gap-2">
-                    <span className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink">{item.amount}</span>
-                    <button className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800">
+                    <span className="rounded-full bg-sand px-4 py-2 text-sm font-semibold text-ink">{item.amount}</span>
+                    <button className="rounded-full bg-panel px-4 py-2 text-sm font-semibold text-white">
                       Review
                     </button>
                   </div>
@@ -54,16 +56,16 @@ export default function OwnerDashboardPage() {
           </div>
         </div>
 
-        <aside className="rounded-[2rem] bg-ink p-8 text-white shadow-panel">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-soft">AI insight</p>
-          <h2 className="mt-2 text-2xl font-semibold">Cash position narrative</h2>
-          <p className="mt-4 text-sm leading-7 text-slate-200">
+        <aside className="glass-panel gradient-stroke rounded-[2.4rem] p-8 text-white">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-mist">AI insight</p>
+          <h2 className="font-display mt-2 text-3xl font-semibold tracking-[-0.03em]">Cash position narrative</h2>
+          <p className="mt-4 text-sm leading-7 text-fog">
             AI can explain why cash available differs from cash collected by separating reserved savings, unmatched deposits,
             pending approvals, and expected debit runs.
           </p>
-          <div className="mt-6 rounded-3xl bg-white/5 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-soft">Money flow</p>
-            <ul className="mt-3 space-y-3 text-sm leading-7 text-slate-200">
+          <div className="mt-6 rounded-[1.8rem] border border-white/10 bg-white/5 p-5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent.cyan">Money flow</p>
+            <ul className="mt-3 space-y-3 text-sm leading-7 text-fog">
               {financeFlow.map((item) => (
                 <li key={item}>{item}</li>
               ))}

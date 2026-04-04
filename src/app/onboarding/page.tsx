@@ -52,13 +52,13 @@ const adminRequirements = [
 
 export default function OnboardingPage() {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
-      <section className="rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-panel">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-dark">Launch onboarding</p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-ink md:text-5xl">
-          Guided setup for tenants, owners, and property teams.
+    <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
+      <section className="glass-panel gradient-stroke rounded-[2.5rem] p-8 md:p-10">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-mist">Launch onboarding</p>
+        <h1 className="font-display mt-3 text-4xl font-semibold tracking-[-0.04em] text-white md:text-6xl">
+          Guided setup for tenants, owners, and operating teams.
         </h1>
-        <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-700">
+        <p className="mt-4 max-w-3xl text-lg leading-8 text-fog">
           The fastest way to go live this week is to make onboarding structured, self-serve where safe, and staff-assisted
           where money or compliance is at risk. Tenant onboarding carries the deepest checks because it drives collections quality.
         </p>
@@ -66,7 +66,7 @@ export default function OnboardingPage() {
           <Link href="/tenant/dashboard" className="rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white">
             Preview tenant journey
           </Link>
-          <Link href="/admin/overview" className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800">
+          <Link href="/admin/overview" className="rounded-full border border-white/12 bg-white/6 px-5 py-3 text-sm font-semibold text-white">
             Preview admin controls
           </Link>
         </div>
