@@ -1,52 +1,85 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-const approvalQueue = [
-  { title: "Caretaker payout", amount: "R3,200", reason: "Monthly site operations", state: "Needs approval", source: "Income account" },
-  { title: "Plumbing emergency", amount: "R5,950", reason: "Burst pipe in Block C", state: "Urgent", source: "Reserve account" }
+type OwnerDashboardData = {
+  owner: { id: string; organization_id: string; full_name: string | null };
+  summary: {
+    collected: string;
+    outstanding: string;
+    pendingApprovals: number;
+    teamMembers: number;
+  };
+  approvals: Array<{
+    title: string;
+    amount: string;
+    reason: string;
+    state: string;
+    source: string;
+  }>;
+  portfolio: Array<{
+    name: string;
+    units: number;
+    occupancy: string;
+    collected: string;
+    outstanding: string;
+    maintenance: string;
+  }>;
+  reportCards: Array<{
+    title: string;
+    value: string;
+    detail: string;
+  }>;
+} | null;
+
+const fallbackPortfolio = [
+  { name: "Central Heights", units: 18, occupancy: "94%", collected: "R126,000", outstanding: "R14,000", maintenance: "3 open" }
+];
+
+const fallbackApprovals = [
+  { title: "Caretaker payout", amount: "R3,200", reason: "Monthly site operations", state: "pending", source: "Income account" }
+];
+
+const fallbackReports = [
+  { title: "Collections integrity", value: "92%", detail: "Paid or scheduled before grace-period breach." }
 ];
 
 const team = [
   {
-    name: "Musa Ndlovu",
-    role: "Building manager",
+    name: "Building manager",
+    role: "Operations",
     focus: "Tenant ops and daily maintenance",
     toggles: { tenants: true, collections: true, payouts: false, access: false }
   },
   {
-    name: "Rethabile Mokoena",
-    role: "Finance officer",
+    name: "Finance officer",
+    role: "Finance",
     focus: "Collections, reconciliation, and owner reporting",
     toggles: { tenants: false, collections: true, payouts: false, access: false }
-  },
-  {
-    name: "Lerato Dube",
-    role: "Support lead",
-    focus: "Resident communication and issue follow-up",
-    toggles: { tenants: true, collections: false, payouts: false, access: false }
   }
 ];
 
-const portfolio = [
-  { name: "Central Heights", units: 18, occupancy: "94%", collected: "R126,000", outstanding: "R14,000", maintenance: "3 open" },
-  { name: "Palm Court", units: 12, occupancy: "100%", collected: "R88,500", outstanding: "R8,700", maintenance: "1 open" }
-];
-
-const reports = [
-  { title: "Collections integrity", value: "92%", detail: "Paid or scheduled before grace-period breach." },
-  { title: "Occupancy health", value: "97%", detail: "Occupied units across the active owner portfolio." },
-  { title: "Maintenance closure", value: "81%", detail: "Requests resolved inside SLA this month." }
-];
-
-const cashLanes = [
-  { label: "Gross rent in", amount: "R214,500", width: "w-full" },
-  { label: "Reserved for Wiseworx savings", amount: "R20,000", width: "w-10/12" },
-  { label: "Approved owner release", amount: "R186,300", width: "w-9/12" }
-];
-
-export function OwnerWorkspace() {
+export function OwnerWorkspace({ data }: { data?: OwnerDashboardData }) {
   const [selectedMember, setSelectedMember] = useState(team[0].name);
+
+  const summary = data?.summary ?? {
+    collected: "R214,500",
+    outstanding: "R34,700",
+    pendingApprovals: 1,
+    teamMembers: 2
+  };
+  const approvals = data?.approvals?.length ? data.approvals : fallbackApprovals;
+  const portfolio = data?.portfolio?.length ? data.portfolio : fallbackPortfolio;
+  const reportCards = data?.reportCards?.length ? data.reportCards : fallbackReports;
+
+  const cashLanes = useMemo(
+    () => [
+      { label: "Gross rent in", amount: summary.collected, width: "w-full" },
+      { label: "Reserved for Wiseworx savings", amount: "R20,000", width: "w-10/12" },
+      { label: "Approved owner release", amount: summary.collected, width: "w-9/12" }
+    ],
+    [summary.collected]
+  );
 
   return (
     <div className="space-y-6">
@@ -59,23 +92,19 @@ export function OwnerWorkspace() {
                 See the whole portfolio, control cash movement, and delegate without losing power.
               </h2>
               <p className="mt-3 text-sm leading-7 text-fog">
-                Owners need one live operating picture: collections, reserves, pending approvals, maintenance pressure,
-                and which team members can touch which part of the building business.
+                This view now pulls from live Supabase data when owners, invoices, approvals, and report snapshots exist.
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <button className="rounded-full border border-white/12 bg-white/6 px-4 py-2 text-sm font-semibold text-white">
-                Add payout account
-              </button>
-              <button className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white">Invite team member</button>
+            <div className="rounded-[1.4rem] border border-white/10 bg-white/5 px-4 py-3 text-sm text-fog">
+              {data?.owner ? `Live owner org: ${data.owner.organization_id}` : "No live owner found yet."}
             </div>
           </div>
 
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <article className="rounded-[1.6rem] border border-white/10 bg-white/5 p-5"><p className="text-[11px] uppercase tracking-[0.24em] text-mist">Collected</p><p className="font-display mt-3 text-4xl text-white">R214,500</p></article>
-            <article className="rounded-[1.6rem] border border-white/10 bg-white/5 p-5"><p className="text-[11px] uppercase tracking-[0.24em] text-mist">Outstanding</p><p className="font-display mt-3 text-4xl text-white">R34,700</p></article>
-            <article className="rounded-[1.6rem] border border-white/10 bg-white/5 p-5"><p className="text-[11px] uppercase tracking-[0.24em] text-mist">Pending approvals</p><p className="font-display mt-3 text-4xl text-white">2</p></article>
-            <article className="rounded-[1.6rem] border border-white/10 bg-white/5 p-5"><p className="text-[11px] uppercase tracking-[0.24em] text-mist">Team members</p><p className="font-display mt-3 text-4xl text-white">3</p></article>
+            <article className="rounded-[1.6rem] border border-white/10 bg-white/5 p-5"><p className="text-[11px] uppercase tracking-[0.24em] text-mist">Collected</p><p className="font-display mt-3 text-4xl text-white">{summary.collected}</p></article>
+            <article className="rounded-[1.6rem] border border-white/10 bg-white/5 p-5"><p className="text-[11px] uppercase tracking-[0.24em] text-mist">Outstanding</p><p className="font-display mt-3 text-4xl text-white">{summary.outstanding}</p></article>
+            <article className="rounded-[1.6rem] border border-white/10 bg-white/5 p-5"><p className="text-[11px] uppercase tracking-[0.24em] text-mist">Pending approvals</p><p className="font-display mt-3 text-4xl text-white">{summary.pendingApprovals}</p></article>
+            <article className="rounded-[1.6rem] border border-white/10 bg-white/5 p-5"><p className="text-[11px] uppercase tracking-[0.24em] text-mist">Team members</p><p className="font-display mt-3 text-4xl text-white">{summary.teamMembers}</p></article>
           </div>
         </div>
 
@@ -88,7 +117,7 @@ export function OwnerWorkspace() {
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <p className="font-display text-xl font-semibold text-ink">{building.name}</p>
-                    <p className="text-sm text-fog">{building.units} active units • {building.occupancy} occupancy</p>
+                    <p className="text-sm text-fog">{building.units} units • {building.occupancy}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-3">
                     <div><p className="text-fog">Collected</p><p className="font-semibold text-ink">{building.collected}</p></div>
@@ -113,8 +142,8 @@ export function OwnerWorkspace() {
           </div>
 
           <div className="mt-6 space-y-4">
-            {approvalQueue.map((item) => (
-              <article key={item.title} className="rounded-[1.7rem] border border-slate-200 bg-white p-5">
+            {approvals.map((item) => (
+              <article key={`${item.title}-${item.amount}`} className="rounded-[1.7rem] border border-slate-200 bg-white p-5">
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                   <div className="max-w-xl">
                     <p className="font-display text-2xl font-semibold text-ink">{item.title}</p>
@@ -138,7 +167,6 @@ export function OwnerWorkspace() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-fog">Cash movement view</p>
                 <h4 className="font-display mt-2 text-2xl font-semibold text-ink">Income to reserve to owner release</h4>
               </div>
-              <button className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800">Open report</button>
             </div>
             <div className="mt-5 space-y-4">
               {cashLanes.map((lane) => (
@@ -194,11 +222,11 @@ export function OwnerWorkspace() {
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-fog">Reports and insight</p>
             <h3 className="font-display mt-2 text-3xl font-semibold tracking-[-0.03em] text-ink">What needs attention this week</h3>
             <div className="mt-5 grid gap-4">
-              {reports.map((report) => (
-                <article key={report.title} className="rounded-[1.6rem] border border-slate-200 bg-white p-4">
+              {reportCards.map((report) => (
+                <article key={`${report.title}-${report.value}`} className="rounded-[1.6rem] border border-slate-200 bg-white p-4">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="font-semibold text-ink">{report.title}</p>
+                      <p className="font-semibold capitalize text-ink">{report.title}</p>
                       <p className="mt-1 text-sm text-fog">{report.detail}</p>
                     </div>
                     <p className="font-display text-3xl font-semibold text-brand-dark">{report.value}</p>

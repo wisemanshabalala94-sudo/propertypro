@@ -1,9 +1,13 @@
 import { TenantWorkspace } from "@/components/tenant-workspace";
+import { getTenantDashboardData } from "@/lib/dashboard-data";
 
-export default function TenantDashboardPage() {
+export const dynamic = "force-dynamic";
+
+export default async function TenantDashboardPage() {
+  const data = await getTenantDashboardData();
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
-      <TenantWorkspace />
+      <TenantWorkspace data={data} />
     </main>
   );
 }
