@@ -5,6 +5,13 @@ const approvalQueue = [
   { title: "Plumbing emergency", amount: "R5,950", status: "Second approval required" }
 ];
 
+const financeFlow = [
+  "Tenant pays through Paystack or deposits with the correct reference.",
+  "Webhook or bank import updates the invoice and creates a receipt trail.",
+  "R100 per tenant payment is reserved into the Wiseworx savings allocation.",
+  "Only approved owner disbursement requests can move income out to payout accounts."
+];
+
 export default function OwnerDashboardPage() {
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
@@ -54,9 +61,16 @@ export default function OwnerDashboardPage() {
             AI can explain why cash available differs from cash collected by separating reserved savings, unmatched deposits,
             pending approvals, and expected debit runs.
           </p>
+          <div className="mt-6 rounded-3xl bg-white/5 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-soft">Money flow</p>
+            <ul className="mt-3 space-y-3 text-sm leading-7 text-slate-200">
+              {financeFlow.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
         </aside>
       </section>
     </main>
   );
 }
-

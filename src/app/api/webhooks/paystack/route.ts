@@ -67,6 +67,22 @@ export async function POST(request: Request) {
       payload: verified
     });
 
+    const { data: tenantProfile } = await supabase
+      .from("profiles")
+      .select("id, email")
+      .eq("id", invoice.tenant_id)
+      .maybeSingle();
+
+    await supabase.from("receipt_notifications").insert({
+      organization_id: invoice.organization_id,
+      invoice_id: invoice.id,
+      recipient_profile_id: tenantProfile?.id ?? null,
+      recipient_email: tenantProfile?.email ?? null,
+      delivery_channel: "email",
+      status: "pending",
+      receipt_reference: reference
+    });
+
     const savingsContribution = calculateSavingsContribution(settledAmount);
     if (savingsContribution > 0) {
       await supabase.from("savings_allocations").insert({

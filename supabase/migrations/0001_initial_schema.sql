@@ -146,6 +146,18 @@ create table if not exists payment_events (
   created_at timestamptz not null default timezone('utc', now())
 );
 
+create table if not exists receipt_notifications (
+  id uuid primary key default uuid_generate_v4(),
+  organization_id uuid not null references organizations(id) on delete cascade,
+  invoice_id uuid not null references invoices(id) on delete cascade,
+  recipient_profile_id uuid references profiles(id) on delete set null,
+  recipient_email text,
+  delivery_channel text not null default 'email' check (delivery_channel in ('email', 'sms', 'whatsapp', 'in_app')),
+  status text not null default 'pending' check (status in ('pending', 'sent', 'failed')),
+  receipt_reference text,
+  created_at timestamptz not null default timezone('utc', now())
+);
+
 create table if not exists notification_preferences (
   id uuid primary key default uuid_generate_v4(),
   organization_id uuid not null references organizations(id) on delete cascade,
