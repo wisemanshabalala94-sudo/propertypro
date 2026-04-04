@@ -129,6 +129,7 @@ export function isValidPaystackSignature(rawBody: string, signature: string | nu
     return false;
   }
 
-  const digest = crypto.createHmac("sha512", env.PAYSTACK_WEBHOOK_SECRET).update(rawBody).digest("hex");
+  const signingSecret = env.PAYSTACK_WEBHOOK_SECRET ?? env.PAYSTACK_SECRET_KEY;
+  const digest = crypto.createHmac("sha512", signingSecret).update(rawBody).digest("hex");
   return digest === signature;
 }
