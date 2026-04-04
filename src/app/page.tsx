@@ -1,32 +1,33 @@
 import Link from "next/link";
-import { InfiniteDoorHero } from "@/components/infinite-door-hero";
+import { AccessMatrix } from "@/components/access-matrix";
+import { DoorPortal } from "@/components/door-portal";
 
 const highlights = [
-  "Live rent intelligence across buildings, units, and tenants without losing financial control.",
-  "Reference-led reconciliation for Paystack, bank transfer, debit orders, and cash deposits.",
-  "Approval-first cash governance so operational spending cannot outrun owner authorization.",
-  "AI copilots across onboarding, affordability review, arrears prioritization, and anomaly detection."
+  "Every tenant gets a clean payment path with the right action shown at the right time.",
+  "Every bank-deposit tenant gets a unique payment reference for clean reconciliation.",
+  "Every owner gets direct visibility into collections, approvals, and controlled payouts.",
+  "Every admin gets full-system control with auditability, override power, and role governance."
 ];
 
 const launchTracks = [
   {
     title: "Tenant onboarding",
-    detail: "Collect identity signals, 3 months of bank statements, debit mandates, and payment preference in one elegant flow."
+    detail: "Collect identity, statements, debit consent, and payment preference without confusing the tenant."
   },
   {
-    title: "Owner approvals",
-    detail: "Hold disbursements behind approval chains so collections become governable capital, not loose cash."
+    title: "Owner team access",
+    detail: "Owners can invite team members and define what they can view, approve, edit, or manage."
   },
   {
-    title: "AI copilots",
-    detail: "Surface risk, missing documents, and collections priorities before teams even open the queue."
+    title: "Admin control",
+    detail: "Administrators can see everything, control roles, enforce policy, and resolve edge cases fast."
   }
 ];
 
 const performancePoints = [
-  "Built to feel premium on both mobile and desktop.",
-  "Visual hierarchy designed for property teams under pressure.",
-  "A launch surface that looks like a platform, not a prototype."
+  "Consistent across phones, laptops, and large office screens.",
+  "Built for live buildings, not pitch decks.",
+  "Every screen now speaks directly to the user in it."
 ];
 
 export default function HomePage() {
@@ -34,17 +35,17 @@ export default function HomePage() {
     <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
       <section className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="glass-panel gradient-stroke relative overflow-hidden rounded-[2.5rem] p-8 md:p-10">
-          <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_center,rgba(53,224,255,0.16),transparent_62%)]" />
+          <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_center,rgba(53,224,255,0.12),transparent_62%)]" />
           <div className="relative max-w-4xl">
             <p className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-mist">
-              The future of African property management
+              Live product experience
             </p>
             <h1 className="font-display mt-6 text-5xl font-semibold leading-[0.92] tracking-[-0.04em] text-white md:text-7xl">
-              Finance, access, onboarding, and control in one cinematic operating system.
+              Property management that actually works for tenants, owners, and operators.
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-fog md:text-xl">
-              PropertyPro is designed to make buildings feel alive in software: every tenant, payment, approval,
-              deposit, and instruction moving through a single high-trust command layer.
+              PropertyPro is designed around day-to-day decisions: paying rent, onboarding tenants, approving spend,
+              reconciling deposits, and running buildings without losing control or clarity.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -71,7 +72,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <InfiniteDoorHero />
+        <DoorPortal />
       </section>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -90,11 +91,11 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-fog">Launch tracks</p>
             <h2 className="font-display mt-3 text-4xl font-semibold tracking-[-0.04em] text-ink md:text-5xl">
-              Built to feel decisive from the first click.
+              Structured around live users, not generic dashboards.
             </h2>
             <p className="mt-4 text-base leading-8 text-slate-600">
-              Each entry point is tuned for the person using it: tenants need clarity, owners need confidence, and
-              administrators need speed without chaos.
+              Each entry point is tuned for the person using it. Tenants need trust and simplicity. Owners need control.
+              Admins need full power and clean oversight.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -123,6 +124,8 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      <AccessMatrix />
     </main>
   );
 }

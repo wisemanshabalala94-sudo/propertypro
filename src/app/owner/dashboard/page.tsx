@@ -12,13 +12,19 @@ const financeFlow = [
   "Only approved owner disbursement requests can move income out to payout accounts."
 ];
 
+const teamMembers = [
+  { name: "Musa Ndlovu", role: "Building manager", scope: "Collections, tenants, maintenance", status: "Active" },
+  { name: "Rethabile Mokoena", role: "Finance officer", scope: "Reconciliation, receipts, reporting", status: "Active" },
+  { name: "Lerato Dube", role: "Support lead", scope: "Tenant support only", status: "Restricted" }
+];
+
 export default function OwnerDashboardPage() {
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
       <section className="glass-panel gradient-stroke rounded-[2.5rem] p-8 md:p-10">
         <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-mist">Owner dashboard</p>
         <h1 className="font-display mt-3 text-4xl font-semibold tracking-[-0.04em] text-white md:text-6xl">
-          Control cash with the confidence of a private command deck.
+          Control collections, spending, and team access with confidence.
         </h1>
         <p className="mt-4 max-w-3xl text-base leading-8 text-fog">
           Owners see live collection performance, outstanding arrears, and any payout or operating debit that needs approval
@@ -72,6 +78,51 @@ export default function OwnerDashboardPage() {
             </ul>
           </div>
         </aside>
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
+        <div className="light-panel gradient-stroke rounded-[2.4rem] p-6 md:p-8">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-fog">Team access</p>
+              <h2 className="font-display mt-2 text-3xl font-semibold tracking-[-0.03em] text-ink">Who can help run the building</h2>
+            </div>
+            <button className="rounded-full bg-panel px-4 py-2 text-sm font-semibold text-white">Invite member</button>
+          </div>
+          <div className="mt-6 space-y-4">
+            {teamMembers.map((member) => (
+              <article key={member.name} className="rounded-[1.6rem] border border-slate-200 bg-white p-4">
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div>
+                    <p className="font-display text-xl font-semibold text-ink">{member.name}</p>
+                    <p className="text-sm text-fog">{member.role}</p>
+                    <p className="mt-2 text-sm leading-7 text-slate-600">{member.scope}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full bg-sand px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-brand-dark">
+                      {member.status}
+                    </span>
+                    <button className="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-800">
+                      Edit access
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="glass-panel gradient-stroke rounded-[2.4rem] p-8 text-white">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-mist">Access logic</p>
+          <h2 className="font-display mt-2 text-3xl font-semibold tracking-[-0.03em]">
+            Owners decide who can see, change, approve, or release funds.
+          </h2>
+          <div className="mt-6 space-y-4 text-sm leading-7 text-fog">
+            <p>Building managers can oversee tenants and operations without touching final owner-level payouts.</p>
+            <p>Finance staff can reconcile deposits, review receipts, and prepare reports with limited outbound authority.</p>
+            <p>Every action can be constrained by role, building, or approval threshold.</p>
+          </div>
+        </div>
       </section>
     </main>
   );

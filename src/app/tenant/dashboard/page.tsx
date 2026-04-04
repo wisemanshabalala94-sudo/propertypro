@@ -17,6 +17,21 @@ const activityTimeline = [
   { label: "Debit mandate waiting confirmation", time: "Today 09:12", tone: "Action needed" }
 ];
 
+const paymentMethods = [
+  {
+    title: "Card or Paystack checkout",
+    detail: "Fastest option for instant confirmation and receipts."
+  },
+  {
+    title: "Bank deposit",
+    detail: "This tenant gets a unique reference that should never be reused by another tenant."
+  },
+  {
+    title: "Debit order",
+    detail: "Once approved, the system can collect automatically on the agreed date."
+  }
+];
+
 export default function TenantDashboardPage() {
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
@@ -28,7 +43,7 @@ export default function TenantDashboardPage() {
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-8 text-fog">
             Tenants get a simple mobile-first flow: see what is due, pay quickly, upload required onboarding documents,
-            and keep the right payment reference visible at all times.
+            and keep the right bank-deposit reference visible at all times.
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -93,7 +108,7 @@ export default function TenantDashboardPage() {
             </div>
             <div className="mt-5 space-y-4 text-sm leading-7 text-fog">
               <p>Card payments can open Paystack checkout.</p>
-              <p>ATM deposits and bank transfers must include the exact reference so the system can reconcile them faster.</p>
+              <p>ATM deposits and bank transfers must include the exact reference assigned to this tenant so the system can reconcile them faster.</p>
               <p>If the reference is missing, the admin queue will hold the payment until it is reviewed manually.</p>
             </div>
           </div>
@@ -112,6 +127,18 @@ export default function TenantDashboardPage() {
                       {item.tone}
                     </span>
                   </div>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="light-panel gradient-stroke rounded-[2.4rem] p-6 md:p-8">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-fog">Payment options</p>
+            <div className="mt-5 space-y-4">
+              {paymentMethods.map((item) => (
+                <article key={item.title} className="rounded-[1.5rem] border border-slate-200 bg-white p-4">
+                  <p className="font-semibold text-ink">{item.title}</p>
+                  <p className="mt-1 text-sm leading-7 text-slate-600">{item.detail}</p>
                 </article>
               ))}
             </div>
