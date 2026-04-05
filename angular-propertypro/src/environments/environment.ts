@@ -1,17 +1,12 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:4200/api',
-  supabaseUrl: '', // SET VIA .env.local: NEXT_PUBLIC_SUPABASE_URL
-  supabaseKey: '', // SET VIA .env.local: NEXT_PUBLIC_SUPABASE_ANON_KEY
-  paystackPublicKey: '', // SET VIA .env.local: PAYSTACK_PUBLIC_KEY
-  paystackSecretKey: '', // SET VIA .env.local: PAYSTACK_SECRET_KEY
-  paystack: {
-    publicKey: '',
-    secretKey: '',
-    webhookSecret: '',
-    callbackUrl: 'http://localhost:4200/payments/callback'
-  },
+  supabaseUrl: 'https://prdogygwrebnrlxambkd.supabase.co',
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZG9neWd3cmVibnJseGFtYmtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMTU2MDcsImV4cCI6MjA5MDg5MTYwN30.vefoy4sl4SWczbGCur7OCbwM09PJIhlCAukME5NvKAA',
+  supabaseServiceKey: '',
+  paystackPublicKey: 'pk_live_40d4f5a55127cf252095a5d0181ab47f709abc36',
+  paystackSecretKey: '',
+  paystackWebhookSecret: '',
   paystackCallbackUrl: 'http://localhost:4200/payments/callback',
   currency: 'ZAR',
-  savingsContributionAmount: 100
+  platformFee: 100
 };
