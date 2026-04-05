@@ -635,16 +635,13 @@ export class OwnerDashboardComponent implements OnInit {
 
   protected getPropertyName(leaseId: string): string {
     const lease = this.leases().find(l => l.id === leaseId);
-    if (!lease) return 'Property';
-    const prop = this.properties().find(p => lease.property_id?.startsWith(p.id.slice(0, 8)));
+    if (!lease?.property_id) return 'Property';
+    const prop = this.properties().find(p => p.id === lease.property_id);
     return prop?.name || 'Property';
   }
 
   protected getPropOccupancy(propId: string): number {
-    const propUnits = this.leases().filter(l => {
-      const prop = this.properties().find(p => l.property_id?.startsWith(p.id.slice(0, 8)));
-      return prop?.id === propId;
-    });
+    const propUnits = this.leases().filter(l => l.property_id === propId);
     const occupied = propUnits.filter(l => l.status === 'active').length;
     return propUnits.length > 0 ? Math.round((occupied / propUnits.length) * 100) : 0;
   }

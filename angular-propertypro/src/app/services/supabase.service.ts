@@ -60,6 +60,7 @@ export interface Unit {
 export interface Lease {
   id: string;
   unit_id: string;
+  property_id: string | null;
   tenant_id: string;
   organization_id: string;
   lease_number: string;
