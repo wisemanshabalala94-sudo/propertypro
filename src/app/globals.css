@@ -128,6 +128,19 @@ a {
   }
 }
 
+@keyframes city-slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-city {
+  animation: city-slide 45s linear infinite;
+}
+
 @keyframes slideInUp {
   from {
     opacity: 0;
@@ -167,5 +180,4 @@ a {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(59, 130, 246, 0.5);
-}
 }

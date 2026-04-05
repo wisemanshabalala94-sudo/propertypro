@@ -11,3 +11,7 @@ export function createServiceClient() {
     }
   });
 }
+
+export function getServerSupabaseClient() {
+  return createServiceClient();
+}

@@ -152,8 +152,12 @@ export async function GET(
       );
     }
 
+    const profile = Array.isArray(staffMember.profiles)
+      ? staffMember.profiles[0]
+      : staffMember.profiles;
+
     // Generate PDF
-    const pdfBuffer = await generatePayslipPDF(payslip, staffMember.profiles?.full_name);
+    const pdfBuffer = await generatePayslipPDF(payslip, profile?.full_name ?? "Staff Member");
 
     // Return as HTML file that can be printed
     return new NextResponse(pdfBuffer, {

@@ -41,10 +41,14 @@ export async function GET(request: Request) {
       );
     }
 
+    const profile = Array.isArray(staffMember.profiles)
+      ? staffMember.profiles[0]
+      : staffMember.profiles;
+
     return NextResponse.json({
       id: staffMember.id,
-      full_name: staffMember.profiles?.full_name,
-      email: staffMember.profiles?.email,
+      full_name: profile?.full_name ?? null,
+      email: profile?.email ?? null,
       job_title: staffMember.job_title,
       department: staffMember.department,
       salary_amount: staffMember.salary_amount,
