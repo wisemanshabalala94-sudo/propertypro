@@ -1,132 +1,50 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { Handler } from '@vercel/node';
+import crypto from 'crypto';
 
-type JsonPrimitive = string | number | boolean | null;
-type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
-interface JsonObject {
-  [key: string]: JsonValue;
-}
+export const config = { api: { bodyParser: false } };
 
-interface PaystackWebhookCustomer {
-  email?: string;
-}
+const handler: Handler = async (req, res) => {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-interface PaystackWebhookMetadata extends JsonObject {
-  invoiceId?: string;
-  invoiceReference?: string;
-  tenantId?: string;
-  organizationId?: string;
-  platformFee?: number;
-  netAmount?: number;
-}
+  const signature = req.headers['x-paystack-signature'] as string;
+  if (!signature) return res.status(401).json({ error: 'Missing signature' });
 
-interface PaystackWebhookData extends JsonObject {
-  id?: number;
-  reference?: string;
-  amount?: number;
-  status?: string;
-  paid_at?: string | null;
-  currency?: string;
-  metadata?: PaystackWebhookMetadata | null;
-  customer?: PaystackWebhookCustomer;
-}
-
-interface PaystackWebhookPayload extends JsonObject {
-  event?: string;
-  data?: PaystackWebhookData;
-}
-
-interface WebhookAcknowledgement {
-  received: boolean;
-  verified: boolean;
-  event: string | null;
-  reference: string | null;
-}
-
-interface ErrorResponse {
-  received: false;
-  error: string;
-}
-
-function getRawBody(request: VercelRequest): string {
-  if (typeof request.body === 'string') {
-    return request.body;
-  }
-
-  if (Buffer.isBuffer(request.body)) {
-    return request.body.toString('utf8');
-  }
-
-  return JSON.stringify(request.body ?? {});
-}
-
-function createSignature(rawBody: string, secretKey: string): string {
-  return createHmac('sha512', secretKey).update(rawBody).digest('hex');
-}
-
-function verifySignature(rawBody: string, signature: string, secretKey: string): boolean {
-  const expectedSignature = createSignature(rawBody, secretKey);
-  const expectedBuffer = Buffer.from(expectedSignature, 'hex');
-  const receivedBuffer = Buffer.from(signature, 'hex');
-
-  if (expectedBuffer.length !== receivedBuffer.length) {
-    return false;
-  }
-
-  return timingSafeEqual(expectedBuffer, receivedBuffer);
-}
-
-export default function handler(
-  request: VercelRequest,
-  response: VercelResponse<WebhookAcknowledgement | ErrorResponse>
-): void {
-  if (request.method !== 'POST') {
-    response.setHeader('Allow', 'POST');
-    response.status(405).json({
-      received: false,
-      error: 'Method not allowed.'
-    });
-    return;
-  }
-
-  const secretKey = process.env.PAYSTACK_SECRET_KEY;
-  if (!secretKey) {
-    response.status(500).json({
-      received: false,
-      error: 'Missing PAYSTACK_SECRET_KEY.'
-    });
-    return;
-  }
-
-  const signatureHeader = request.headers['x-paystack-signature'];
-  const signature = Array.isArray(signatureHeader) ? signatureHeader[0] : signatureHeader;
-
-  if (!signature) {
-    response.status(400).json({
-      received: false,
-      error: 'Missing x-paystack-signature header.'
-    });
-    return;
-  }
-
-  const rawBody = getRawBody(request);
-
-  if (!verifySignature(rawBody, signature, secretKey)) {
-    response.status(401).json({
-      received: false,
-      error: 'Invalid Paystack signature.'
-    });
-    return;
-  }
-
-  const payload = (typeof request.body === 'object' && request.body !== null
-    ? request.body
-    : JSON.parse(rawBody)) as PaystackWebhookPayload;
-
-  response.status(200).json({
-    received: true,
-    verified: true,
-    event: typeof payload.event === 'string' ? payload.event : null,
-    reference: typeof payload.data?.reference === 'string' ? payload.data.reference : null
+  const rawBody = await new Promise<string>((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => resolve(body));
+    req.on('error', reject);
   });
-}
+
+  const hash = crypto.createHmac('sha512', process.env.PAYSTACK_SECRET_KEY ?? '').update(rawBody).digest('hex');
+  if (hash !== signature) return res.status(401).json({ error: 'Invalid signature' });
+
+  const event = JSON.parse(rawBody);
+
+  if (event.event === 'charge.success') {
+    const { reference, amount, metadata } = event.data;
+    const invoiceId = metadata?.invoiceId;
+    if (invoiceId) {
+      try {
+        const url = process.env.SUPABASE_URL;
+        const key = process.env.SUPABASE_SERVICE_KEY;
+        if (url && key) {
+          await fetch(`${url}/rest/v1/invoices?id=eq.${invoiceId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', apikey: key, Authorization: `Bearer ${key}`, Prefer: 'return=representation' },
+            body: JSON.stringify({ status: 'paid', amount_paid: amount / 100, paid_at: new Date().toISOString(), payment_method: 'paystack', payment_reference_code: reference })
+          });
+          await fetch(`${url}/rest/v1/payments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: key, Authorization: `Bearer ${key}`, Prefer: 'return=representation' },
+            body: JSON.stringify({ organization_id: metadata?.organizationId, invoice_id: invoiceId, tenant_id: metadata?.tenantId, amount: amount / 100, payment_method: 'paystack_card', paystack_reference: reference, status: 'completed', processed_at: new Date().toISOString() })
+          });
+        }
+      } catch (err) { console.error('Webhook error:', err); }
+    }
+  }
+
+  return res.status(200).json({ received: true });
+};
+
+export default handler;

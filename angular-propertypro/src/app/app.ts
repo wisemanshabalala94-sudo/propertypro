@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header.component';
+import { AiChatWidgetComponent } from './features/ai-assistant/ai-chat-widget.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent],
+  imports: [RouterOutlet, HeaderComponent, AiChatWidgetComponent],
   template: `
     <div class="app-shell">
       <app-header></app-header>
@@ -18,6 +19,7 @@ import { HeaderComponent } from './header.component';
           <p class="app-footer__text">&copy; {{ currentYear }} WiseWorx. PropertyPro&trade; Platform.</p>
         </div>
       </footer>
+      <app-ai-chat-widget></app-ai-chat-widget>
     </div>
   `,
   styles: [`
