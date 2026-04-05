@@ -5,10 +5,32 @@ import { AuthService } from '../services/auth.service';
 import { SupabaseService, Property, Lease, Invoice, Profile, MaintenanceRequest, Expense, TenantApplication } from '../services/supabase.service';
 
 interface DashboardMetrics {
-  totalProperties: number; totalUnits: number; occupiedUnits: number;
-  occupancyRate: number; totalRevenue: number; outstandingInvoices: number;
-  monthlyRevenue: number; pendingApplications: number; pendingMaintenance: number;
-  totalExpenses: number; netProfit: number; activeTenants: number;
+  totalProperties: number;
+  totalUnits: number;
+  occupiedUnits: number;
+  occupancyRate: number;
+  totalRevenue: number;
+  outstandingInvoices: number;
+  monthlyRevenue: number;
+  pendingApplications: number;
+  pendingMaintenance: number;
+  totalExpenses: number;
+  netProfit: number;
+  activeTenants: number;
+}
+
+interface ChartDataPoint {
+  label: string;
+  value: number;
+  income?: number;
+  expense?: number;
+}
+
+interface ExpenseFormData {
+  description: string;
+  category: string;
+  amount: number;
+  vendor: string;
 }
 
 @Component({
@@ -17,9 +39,17 @@ interface DashboardMetrics {
   imports: [CommonModule, FormsModule],
   template: `
     <div class="dashboard-page">
-      @if (loading()) { <div class="loading-container"><div class="spinner"></div><p>Loading dashboard...</p></div> }
-      @else if (error()) { <div class="error-banner"><span>{{ error() }}</span><button class="btn btn-sm btn-secondary" (click)="loadData()">Retry</button></div> }
-      @else {
+      @if (loading()) {
+        <div class="loading-container">
+          <div class="spinner"></div>
+          <p>Loading dashboard...</p>
+        </div>
+      } @else if (error()) {
+        <div class="error-banner">
+          <span>{{ error() }}</span>
+          <button class="btn btn-sm btn-secondary" (click)="loadData()">Retry</button>
+        </div>
+      } @else {
 
       <!-- Page Header -->
       <header class="page-header">
@@ -48,7 +78,7 @@ interface DashboardMetrics {
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-card__icon stat-card__icon--green">
+          <div class="stat-card__icon stat-card__icon--primary">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
           </div>
           <div class="stat-card__content">
@@ -58,7 +88,7 @@ interface DashboardMetrics {
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-card__icon stat-card__icon--blue">
+          <div class="stat-card__icon stat-card__icon--amber">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
           <div class="stat-card__content">
@@ -309,14 +339,14 @@ interface DashboardMetrics {
               <div class="chart-container">
                 @for (month of financialData; track month.label) {
                   <div class="chart-group">
-                    <div class="chart-bar chart-bar--income" [style.height.%]="(month.income / maxFin) * 100"></div>
-                    <div class="chart-bar chart-bar--expense" [style.height.%]="(month.expense / maxFin) * 100"></div>
+                    <div class="chart-bar chart-bar--income" [style.height.%]="((month.income ?? 0) / maxFin) * 100"></div>
+                    <div class="chart-bar chart-bar--expense" [style.height.%]="((month.expense ?? 0) / maxFin) * 100"></div>
                     <span class="chart-bar-label">{{ month.label }}</span>
                   </div>
                 }
               </div>
               <div class="chart-legend">
-                <span class="chart-legend__item"><span class="chart-legend__dot chart-legend__dot--green"></span>Income</span>
+                <span class="chart-legend__item"><span class="chart-legend__dot chart-legend__dot--primary"></span>Income</span>
                 <span class="chart-legend__item"><span class="chart-legend__dot chart-legend__dot--red"></span>Expenses</span>
               </div>
             </div>
@@ -325,9 +355,9 @@ interface DashboardMetrics {
             <div class="card-header"><h2 class="card-title">Financial Summary</h2></div>
             <div class="card-body">
               <div class="finance-summary">
-                <div class="finance-row"><span>Total Revenue (YTD)</span><span class="font-semibold text-green">{{ fmtCur(metrics().totalRevenue) }}</span></div>
+                <div class="finance-row"><span>Total Revenue (YTD)</span><span class="font-semibold text-primary">{{ fmtCur(metrics().totalRevenue) }}</span></div>
                 <div class="finance-row"><span>Total Expenses (YTD)</span><span class="font-semibold text-red">{{ fmtCur(metrics().totalExpenses) }}</span></div>
-                <div class="finance-row border-top"><span class="font-bold">Net Profit</span><span class="font-bold" [class.text-green]="metrics().netProfit >= 0" [class.text-red]="metrics().netProfit < 0">{{ fmtCur(metrics().netProfit) }}</span></div>
+                <div class="finance-row border-top"><span class="font-bold">Net Profit</span><span class="font-bold" [class.text-primary]="metrics().netProfit >= 0" [class.text-red]="metrics().netProfit < 0">{{ fmtCur(metrics().netProfit) }}</span></div>
                 <div class="finance-row"><span>Outstanding Invoices</span><span class="font-semibold text-amber">{{ fmtCur(metrics().outstandingInvoices) }}</span></div>
                 <div class="finance-row"><span>Monthly Recurring</span><span class="font-semibold">{{ fmtCur(metrics().monthlyRevenue) }}</span></div>
               </div>
@@ -374,18 +404,18 @@ interface DashboardMetrics {
     .stat-card { background: white; border-radius: 0.75rem; padding: 1.25rem; border: 1px solid #E5E7EB; display: flex; align-items: center; gap: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
     .stat-card__icon { width: 2.5rem; height: 2.5rem; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; flex-shrink: 0; }
     .stat-card__icon--purple { background: #F5F3FF; color: #7C3AED; }
-    .stat-card__icon--green { background: #D1FAE5; color: #10B981; }
-    .stat-card__icon--blue { background: #DBEAFE; color: #3B82F6; }
+    .stat-card__icon--primary { background: #EDE9FE; color: #7C3AED; }
+    .stat-card__icon--amber { background: #FEF3C7; color: #F59E0B; }
     .stat-card__icon--red { background: #FEE2E2; color: #EF4444; }
     .stat-card__content { flex: 1; }
     .stat-value { font-size: 1.5rem; font-weight: 700; color: #111827; }
     .stat-label { font-size: 0.8rem; color: #6B7280; margin-top: 0.125rem; }
     .stat-change { font-size: 0.75rem; font-weight: 500; margin-top: 0.25rem; }
-    .stat-change.positive { color: #10B981; } .stat-change.negative { color: #EF4444; }
+    .stat-change.positive { color: #7C3AED; } .stat-change.negative { color: #EF4444; }
     .tabs-bar { display: flex; border-bottom: 1px solid #E5E7EB; background: white; padding: 0 2rem; max-width: 1280px; margin: 0 auto; overflow-x: auto; }
     .tab-item { padding: 0.875rem 1.25rem; font-size: 0.875rem; font-weight: 500; color: #6B7280; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; }
     .tab-item:hover { color: #1F2937; } .tab-item.active { color: #7C3AED; border-bottom-color: #7C3AED; }
-    .mb-6 { margin-bottom: 1.5rem; } .p-0 { padding: 0; } .py-8 { padding: 2rem 0; } .py-6 { padding: 1.5rem 0; } .text-center { text-align: center; } .text-gray-500 { color: #6B7280; } .text-sm { font-size: 0.75rem; } .font-medium { font-weight: 500; } .font-semibold { font-weight: 600; } .font-bold { font-weight: 700; } .text-lg { font-size: 1.125rem; } .text-green { color: #10B981; } .text-red { color: #EF4444; } .text-amber { color: #F59E0B; } .border-top { border-top: 2px solid #E5E7EB; padding-top: 0.75rem; margin-top: 0.75rem; }
+    .mb-6 { margin-bottom: 1.5rem; } .p-0 { padding: 0; } .py-8 { padding: 2rem 0; } .py-6 { padding: 1.5rem 0; } .text-center { text-align: center; } .text-gray-500 { color: #6B7280; } .text-sm { font-size: 0.75rem; } .font-medium { font-weight: 500; } .font-semibold { font-weight: 600; } .font-bold { font-weight: 700; } .text-lg { font-size: 1.125rem; } .text-primary { color: #7C3AED; } .text-red { color: #EF4444; } .text-amber { color: #F59E0B; } .border-top { border-top: 2px solid #E5E7EB; padding-top: 0.75rem; margin-top: 0.75rem; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 0 2rem 2rem; max-width: 1280px; margin: 0 auto; }
     .property-row, .application-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1.5rem; border-bottom: 1px solid #F3F4F6; transition: background 0.15s ease; }
     .property-row:hover, .application-row:hover { background: #F5F3FF; }
@@ -397,33 +427,57 @@ interface DashboardMetrics {
     .chart-bar-value { position: absolute; top: -1.25rem; left: 50%; transform: translateX(-50%); font-size: 0.625rem; font-weight: 600; color: #374151; white-space: nowrap; }
     .chart-bar-label { position: absolute; bottom: -1.5rem; left: 50%; transform: translateX(-50%); font-size: 0.625rem; color: #6B7280; white-space: nowrap; }
     .chart-group { flex: 1; display: flex; gap: 0.125rem; align-items: flex-end; position: relative; }
-    .chart-bar--income { background: linear-gradient(180deg, #10B981 0%, #6EE7B7 100%); }
+    .chart-bar--income { background: linear-gradient(180deg, #7C3AED 0%, #A78BFA 100%); }
     .chart-bar--expense { background: linear-gradient(180deg, #EF4444 0%, #FCA5A5 100%); }
     .chart-legend { display: flex; gap: 2rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #E5E7EB; }
     .chart-legend__item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: #6B7280; }
     .chart-legend__dot { width: 0.5rem; height: 0.5rem; border-radius: 9999px; }
-    .chart-legend__dot--green { background: #10B981; } .chart-legend__dot--red { background: #EF4444; }
+    .chart-legend__dot--primary { background: #7C3AED; } .chart-legend__dot--red { background: #EF4444; }
     .finance-summary { display: flex; flex-direction: column; gap: 0.75rem; }
     .finance-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; }
     .empty-state { text-align: center; } .empty-state-text { font-size: 0.875rem; }
     .form-input--sm, .form-select--sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
-    .app-footer { padding: 1.5rem 2rem 2rem; }
-    .app-footer__inner { max-width: 1280px; margin: 0 auto; padding: 1.25rem; border-radius: 0.75rem; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
-    .app-footer__logo { height: 2rem; width: auto; } .app-footer__text { margin: 0; color: #6B7280; font-size: 0.8rem; }
+    .app-footer { padding: 1.5rem 1rem 2rem; background: white; border-top: 1px solid #E5E7EB; }
+    .app-footer__inner { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+    .app-footer__logo { height: 2.5rem; width: auto; }
+    .app-footer__text { margin: 0; color: #6B7280; font-size: 0.8rem; }
     .loading-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; color: #6B7280; gap: 1rem; }
     .error-banner { margin: 2rem; padding: 1rem 1.5rem; background: #FEF2F2; border: 1px solid #FECACA; border-radius: 0.5rem; display: flex; align-items: center; justify-content: space-between; color: #991B1B; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.875rem; cursor: pointer; border: 1px solid transparent; text-decoration: none; transition: all 0.2s ease; }
+    .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+    .btn-primary { background: #7C3AED; color: white; border-color: #7C3AED; } .btn-primary:hover { background: #6D28D9; }
+    .btn-secondary { background: white; color: #374151; border-color: #D1D5DB; } .btn-secondary:hover { background: #F9FAFB; }
+    .badge { display: inline-flex; align-items: center; padding: 0.25rem 0.625rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.025em; }
+    .badge-purple { background: #F5F3FF; color: #7C3AED; } .badge-success { background: #D1FAE5; color: #065F46; } .badge-warning { background: #FEF3C7; color: #92400E; } .badge-error { background: #FEE2E2; color: #991B1B; } .badge-info { background: #DBEAFE; color: #1E40AF; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #E5E7EB; overflow: hidden; }
+    .card-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #F3F4F6; display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: 1rem; font-weight: 600; color: #1F2937; }
+    .card-body { padding: 1.5rem; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .data-table thead { background: #F9FAFB; }
+    .data-table th { padding: 0.75rem 1rem; text-align: left; font-weight: 600; color: #6B7280; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; border-bottom: 1px solid #E5E7EB; }
+    .data-table td { padding: 0.875rem 1rem; border-bottom: 1px solid #F3F4F6; color: #374151; }
+    .data-table tbody tr:hover { background: #F5F3FF; }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .form-group { display: flex; flex-direction: column; gap: 0.375rem; margin-bottom: 1rem; }
+    .form-label { font-size: 0.875rem; font-weight: 500; color: #374151; }
+    .form-input, .form-select { padding: 0.625rem 0.875rem; border: 1px solid #D1D5DB; border-radius: 0.5rem; font-size: 0.875rem; }
+    .form-input:focus, .form-select:focus { outline: none; border-color: #7C3AED; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
-    .modal { background: white; border-radius: 0.75rem; box-shadow: 0 25px 50px rgba(0,0,0,0.15); width: 100%; max-width: 28rem; }
+    .modal { background: white; border-radius: 0.75rem; box-shadow: 0 25px 50px rgba(0,0,0,0.15); width: 100%; max-width: 32rem; max-height: 90vh; overflow-y: auto; }
     .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #E5E7EB; display: flex; align-items: center; justify-content: space-between; }
-    .modal-body { padding: 1.5rem; } .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #E5E7EB; display: flex; justify-content: flex-end; gap: 0.75rem; }
-    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6B7280; }
+    .modal-body { padding: 1.5rem; }
+    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #E5E7EB; display: flex; justify-content: flex-end; gap: 0.75rem; }
+    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6B7280; padding: 0.25rem; }
+    .spinner { width: 2rem; height: 2rem; border: 3px solid #E5E7EB; border-top-color: #7C3AED; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .grid-2 { grid-template-columns: 1fr; } }
-    @media (max-width: 640px) { .stats-grid { grid-template-columns: 1fr; } .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; } .data-table { font-size: 0.75rem; } .tabs-bar { padding: 0 1rem; } }
+    @media (max-width: 640px) { .stats-grid { grid-template-columns: 1fr; } .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; } .tabs-bar { padding: 0 1rem; } .data-table { font-size: 0.75rem; } }
   `]
 })
 export class OwnerDashboardComponent implements OnInit {
   private authService = inject(AuthService);
-  private supabase = inject(SupabaseService);
+  private supabaseService = inject(SupabaseService);
 
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
@@ -437,125 +491,238 @@ export class OwnerDashboardComponent implements OnInit {
   protected readonly allApps = signal<TenantApplication[]>([]);
   protected readonly userName = signal('Owner');
   protected readonly metrics = signal<DashboardMetrics>({
-    totalProperties: 0, totalUnits: 0, occupiedUnits: 0, occupancyRate: 0,
-    totalRevenue: 0, outstandingInvoices: 0, monthlyRevenue: 0,
-    pendingApplications: 0, pendingMaintenance: 0, totalExpenses: 0, netProfit: 0, activeTenants: 0
+    totalProperties: 0,
+    totalUnits: 0,
+    occupiedUnits: 0,
+    occupancyRate: 0,
+    totalRevenue: 0,
+    outstandingInvoices: 0,
+    monthlyRevenue: 0,
+    pendingApplications: 0,
+    pendingMaintenance: 0,
+    totalExpenses: 0,
+    netProfit: 0,
+    activeTenants: 0
   });
 
   protected activeSection = 'overview';
   protected searchTerm = '';
   protected statusFilter = '';
   protected showExpenseModal = false;
-  protected expenseForm = { description: '', category: 'maintenance', amount: 0, vendor: '' };
+  protected expenseForm: ExpenseFormData = { description: '', category: 'maintenance', amount: 0, vendor: '' };
   protected readonly currentYear = new Date().getFullYear();
 
-  protected readonly revenueData = [
-    { label: 'May', value: 32000 }, { label: 'Jun', value: 35000 }, { label: 'Jul', value: 38000 },
-    { label: 'Aug', value: 41000 }, { label: 'Sep', value: 39000 }, { label: 'Oct', value: 42000 },
-    { label: 'Nov', value: 45000 }, { label: 'Dec', value: 43000 }, { label: 'Jan', value: 46000 },
-    { label: 'Feb', value: 44000 }, { label: 'Mar', value: 48000 }, { label: 'Apr', value: 45600 }
+  protected readonly revenueData: ChartDataPoint[] = [
+    { label: 'May', value: 32000 },
+    { label: 'Jun', value: 35000 },
+    { label: 'Jul', value: 38000 },
+    { label: 'Aug', value: 41000 },
+    { label: 'Sep', value: 39000 },
+    { label: 'Oct', value: 42000 },
+    { label: 'Nov', value: 45000 },
+    { label: 'Dec', value: 43000 },
+    { label: 'Jan', value: 46000 },
+    { label: 'Feb', value: 44000 },
+    { label: 'Mar', value: 48000 },
+    { label: 'Apr', value: 45600 }
   ];
-  protected readonly financialData = [
-    { label: 'May', income: 32000, expense: 8000 }, { label: 'Jun', income: 35000, expense: 9500 },
-    { label: 'Jul', income: 38000, expense: 7200 }, { label: 'Aug', income: 41000, expense: 11000 },
-    { label: 'Sep', income: 39000, expense: 8800 }, { label: 'Oct', income: 42000, expense: 10200 },
-    { label: 'Nov', income: 45000, expense: 9000 }, { label: 'Dec', income: 43000, expense: 12000 },
-    { label: 'Jan', income: 46000, expense: 8500 }, { label: 'Feb', income: 44000, expense: 9800 },
-    { label: 'Mar', income: 48000, expense: 10500 }, { label: 'Apr', income: 45600, expense: 9200 }
-  ];
-  protected get maxRev(): number { return Math.max(...this.revenueData.map(m => m.value)); }
-  protected get maxFin(): number { return Math.max(...this.financialData.map(m => Math.max(m.income, m.expense))); }
 
-  protected filteredInvoices(): Invoice[] {
-    let result = this.invoices();
-    if (this.statusFilter) result = result.filter(i => i.status === this.statusFilter);
-    if (this.searchTerm) {
-      const t = this.searchTerm.toLowerCase();
-      result = result.filter(i => i.invoice_number.toLowerCase().includes(t) || i.tenant_id.toLowerCase().includes(t));
-    }
-    return result;
+  protected readonly financialData: ChartDataPoint[] = [
+    { label: 'May', income: 32000, expense: 8000 },
+    { label: 'Jun', income: 35000, expense: 9500 },
+    { label: 'Jul', income: 38000, expense: 7200 },
+    { label: 'Aug', income: 41000, expense: 11000 },
+    { label: 'Sep', income: 39000, expense: 8800 },
+    { label: 'Oct', income: 42000, expense: 10200 },
+    { label: 'Nov', income: 45000, expense: 9000 },
+    { label: 'Dec', income: 43000, expense: 12000 },
+    { label: 'Jan', income: 46000, expense: 8500 },
+    { label: 'Feb', income: 44000, expense: 9800 },
+    { label: 'Mar', income: 48000, expense: 10500 },
+    { label: 'Apr', income: 45600, expense: 9200 }
+  ];
+
+  protected get maxRev(): number {
+    return Math.max(...this.revenueData.map(m => m.value));
   }
 
-  ngOnInit(): void { void this.loadData(); }
+  protected get maxFin(): number {
+    return Math.max(...this.financialData.map(m => Math.max(m.income ?? 0, m.expense ?? 0)));
+  }
 
-  async loadData(): Promise<void> {
-    this.loading.set(true); this.error.set(null);
+  ngOnInit(): void {
+    void this.loadData();
+  }
+
+  protected async loadData(): Promise<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
     try {
       const user = this.authService.getCurrentUser();
-      if (!user?.organizationId) { this.error.set('No organization found'); return; }
-      const token = user.auth?.accessToken;
-      const [properties, leases, invoices, tenants, maintenance, expenseList, pendingApps, allApps] = await Promise.all([
-        this.supabase.getPropertiesByOrg(user.organizationId, token).catch(() => []),
-        this.supabase.getLeasesByOrg(user.organizationId, token).catch(() => []),
-        this.supabase.getInvoicesByOrg(user.organizationId, undefined, token).catch(() => []),
-        this.supabase.getProfilesByOrg(user.organizationId, token).catch(() => []),
-        this.supabase.getMaintenanceRequests(undefined, user.organizationId, token).catch(() => []),
-        this.supabase.getExpensesByOrg(user.organizationId, token).catch(() => []),
-        this.supabase.getOnboardingApplications(user.organizationId, 'in_review', token).catch(() => []),
-        this.supabase.getTenantApplications(user.organizationId, undefined, token).catch(() => [])
-      ]);
-      this.properties.set(properties); this.leases.set(leases); this.invoices.set(invoices);
-      this.tenants.set(tenants); this.maintenanceRequests.set(maintenance); this.expenses.set(expenseList);
-      this.pendingApps.set(pendingApps); this.allApps.set(allApps);
+      if (!user?.organizationId) {
+        this.error.set('No organization found. Please log in as an owner.');
+        return;
+      }
 
-      const totalRevenue = invoices.filter(i => i.status === 'paid').reduce((s, i) => s + Number(i.amount), 0);
-      const outstanding = invoices.filter(i => ['unpaid','partial','overdue'].includes(i.status)).reduce((s, i) => s + (Number(i.amount) - Number(i.amount_paid)), 0);
-      const totalExpenses = expenseList.reduce((s, e) => s + Number(e.amount), 0);
-      const activeTenants = new Set(leases.map(l => l.tenant_id)).size;
+      const token = user.auth?.accessToken;
+
+      const [properties, leases, invoices, tenants, maintenance, expenseList, pendingApps, allApps] = await Promise.all([
+        this.supabaseService.getPropertiesByOrg(user.organizationId, token).catch(() => [] as Property[]),
+        this.supabaseService.getLeasesByOrg(user.organizationId, token).catch(() => [] as Lease[]),
+        this.supabaseService.getInvoicesByOrg(user.organizationId, undefined, token).catch(() => [] as Invoice[]),
+        this.supabaseService.getProfilesByOrg(user.organizationId, token).catch(() => [] as Profile[]),
+        this.supabaseService.getMaintenanceRequests(undefined, user.organizationId, token).catch(() => [] as MaintenanceRequest[]),
+        this.supabaseService.getExpensesByOrg(user.organizationId, token).catch(() => [] as Expense[]),
+        this.supabaseService.getTenantApplications(user.organizationId, 'pending', token).catch(() => [] as TenantApplication[]),
+        this.supabaseService.getTenantApplications(user.organizationId, undefined, token).catch(() => [] as TenantApplication[])
+      ]);
+
+      this.properties.set(properties);
+      this.leases.set(leases);
+      this.invoices.set(invoices);
+      this.tenants.set(tenants);
+      this.maintenanceRequests.set(maintenance);
+      this.expenses.set(expenseList);
+      this.pendingApps.set(pendingApps);
+      this.allApps.set(allApps);
+
+      const totalRevenue = invoices.filter(i => i.status === 'paid').reduce((sum, i) => sum + Number(i.amount), 0);
+      const outstanding = invoices.filter(i => ['unpaid', 'partial', 'overdue'].includes(i.status)).reduce((sum, i) => sum + (Number(i.amount) - Number(i.amount_paid)), 0);
+      const totalExpenses = expenseList.reduce((sum, e) => sum + Number(e.amount), 0);
+      const activeTenants = new Set(leases.filter(l => l.status === 'active').map(l => l.tenant_id)).size;
       const occupiedUnits = leases.filter(l => l.status === 'active').length;
       const totalUnits = leases.length;
       const occupancyRate = totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
 
       this.metrics.set({
-        totalProperties: properties.length, totalUnits, occupiedUnits, occupancyRate,
-        totalRevenue, outstandingInvoices: outstanding, monthlyRevenue: totalRevenue / 12,
+        totalProperties: properties.length,
+        totalUnits,
+        occupiedUnits,
+        occupancyRate,
+        totalRevenue,
+        outstandingInvoices: outstanding,
+        monthlyRevenue: totalRevenue / 12,
         pendingApplications: pendingApps.length,
-        pendingMaintenance: maintenance.filter(m => !['completed','cancelled'].includes(m.status)).length,
-        totalExpenses, netProfit: totalRevenue - totalExpenses, activeTenants
+        pendingMaintenance: maintenance.filter(m => !['completed', 'cancelled'].includes(m.status)).length,
+        totalExpenses,
+        netProfit: totalRevenue - totalExpenses,
+        activeTenants
       });
+
       this.userName.set(user.fullName || 'Owner');
-    } catch (e) { this.error.set(e instanceof Error ? e.message : 'Failed to load'); }
-    finally { this.loading.set(false); }
+    } catch (err) {
+      this.error.set(err instanceof Error ? err.message : 'Failed to load dashboard data');
+    } finally {
+      this.loading.set(false);
+    }
   }
 
-  async approveApplication(app: TenantApplication): Promise<void> {
+  protected filteredInvoices(): Invoice[] {
+    let result = this.invoices();
+    if (this.statusFilter) {
+      result = result.filter(inv => inv.status === this.statusFilter);
+    }
+    if (this.searchTerm.trim()) {
+      const term = this.searchTerm.toLowerCase();
+      result = result.filter(inv =>
+        inv.invoice_number.toLowerCase().includes(term) ||
+        inv.tenant_id.toLowerCase().includes(term)
+      );
+    }
+    return result;
+  }
+
+  protected getPropertyName(leaseId: string): string {
+    const lease = this.leases().find(l => l.id === leaseId);
+    if (!lease) return 'Property';
+    const prop = this.properties().find(p => lease.property_id?.startsWith(p.id.slice(0, 8)));
+    return prop?.name || 'Property';
+  }
+
+  protected getPropOccupancy(propId: string): number {
+    const propUnits = this.leases().filter(l => {
+      const prop = this.properties().find(p => l.property_id?.startsWith(p.id.slice(0, 8)));
+      return prop?.id === propId;
+    });
+    const occupied = propUnits.filter(l => l.status === 'active').length;
+    return propUnits.length > 0 ? Math.round((occupied / propUnits.length) * 100) : 0;
+  }
+
+  protected statusColor(status: string): string {
+    const colorMap: Record<string, string> = {
+      paid: 'success',
+      unpaid: 'warning',
+      overdue: 'error',
+      partial: 'warning',
+      sent: 'info'
+    };
+    return colorMap[status] || 'info';
+  }
+
+  protected async approveApplication(app: TenantApplication): Promise<void> {
     const user = this.authService.getCurrentUser();
     if (!user?.auth?.accessToken) return;
+
     try {
-      await this.supabase.patch('tenant_applications', app.id, { status: 'approved', reviewed_by: user.id, reviewed_at: new Date().toISOString() } as Record<string, unknown>, user.auth.accessToken);
+      await this.supabaseService.patch('tenant_applications', app.id, {
+        status: 'approved',
+        reviewed_by: user.id,
+        reviewed_at: new Date().toISOString()
+      } as Record<string, unknown>, user.auth.accessToken);
       await this.loadData();
-    } catch { /* silent */ }
+    } catch {
+      this.error.set('Failed to approve application');
+    }
   }
-  async rejectApplication(app: TenantApplication): Promise<void> {
+
+  protected async rejectApplication(app: TenantApplication): Promise<void> {
     const user = this.authService.getCurrentUser();
     if (!user?.auth?.accessToken) return;
+
     try {
-      await this.supabase.patch('tenant_applications', app.id, { status: 'rejected', reviewed_by: user.id, reviewed_at: new Date().toISOString(), rejection_reason: 'Does not meet criteria' } as Record<string, unknown>, user.auth.accessToken);
+      await this.supabaseService.patch('tenant_applications', app.id, {
+        status: 'rejected',
+        reviewed_by: user.id,
+        reviewed_at: new Date().toISOString(),
+        rejection_reason: 'Application rejected by owner'
+      } as Record<string, unknown>, user.auth.accessToken);
       await this.loadData();
-    } catch { /* silent */ }
+    } catch {
+      this.error.set('Failed to reject application');
+    }
   }
-  async submitExpense(): Promise<void> {
+
+  protected async submitExpense(): Promise<void> {
     const user = this.authService.getCurrentUser();
     if (!user || !this.expenseForm.description || !this.expenseForm.amount) return;
+
     try {
-      await this.supabase.createExpense({
-        organization_id: user.organizationId ?? '', property_id: null, category: this.expenseForm.category,
-        description: this.expenseForm.description, amount: this.expenseForm.amount, vendor_name: this.expenseForm.vendor || null,
-        status: 'pending', approved_by: null, paid_at: null
+      await this.supabaseService.createExpense({
+        organization_id: user.organizationId ?? '',
+        property_id: null,
+        category: this.expenseForm.category,
+        description: this.expenseForm.description,
+        amount: this.expenseForm.amount,
+        vendor_name: this.expenseForm.vendor || null,
+        status: 'pending',
+        approved_by: null,
+        paid_at: null
       }, user.auth?.accessToken);
+
       this.showExpenseModal = false;
       this.expenseForm = { description: '', category: 'maintenance', amount: 0, vendor: '' };
       await this.loadData();
-    } catch { /* silent */ }
+    } catch {
+      this.error.set('Failed to submit expense');
+    }
   }
 
-  fmtCur(n: number): string { return new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR', maximumFractionDigits: 0 }).format(n); }
-  fmtDate(d: string): string { return new Date(d).toLocaleDateString('en-ZA', { month: 'short', day: 'numeric', year: 'numeric' }); }
-  statusColor(s: string): string { return { paid: 'success', unpaid: 'warning', overdue: 'error', partial: 'warning', sent: 'info' }[s] || 'info'; }
-  getPropertyName(leaseId: string): string { return this.properties().find(p => leaseId.startsWith(p.id.slice(0,8)))?.name || 'Property'; }
-  getPropOccupancy(propId: string): number {
-    const propUnits = this.leases().filter(l => { const p = this.properties().find(pr => l.unit_id.startsWith(pr.id.slice(0,8))); return p?.id === propId; });
-    const occupied = propUnits.filter(l => l.status === 'active').length;
-    return propUnits.length > 0 ? Math.round((occupied / propUnits.length) * 100) : 0;
+  protected fmtCur(amount: number): string {
+    return new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR', maximumFractionDigits: 0 }).format(amount);
+  }
+
+  protected fmtDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString('en-ZA', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 }
