@@ -125,6 +125,25 @@ using (
   )
 );
 
+create policy "staff members managed by organization admins"
+on staff_members for all
+using (
+  exists (
+    select 1 from profiles
+    where id = auth.uid()
+      and organization_id = staff_members.organization_id
+      and role in ('admin', 'owner')
+  )
+)
+with check (
+  exists (
+    select 1 from profiles
+    where id = auth.uid()
+      and organization_id = staff_members.organization_id
+      and role in ('admin', 'owner')
+  )
+);
+
 create policy "staff can view own payslips"
 on payslips for select
 using (
@@ -160,5 +179,125 @@ with check (
     where id = auth.uid()
       and organization_id = payslips.organization_id
       and role in ('admin', 'owner')
+  )
+);
+
+create policy "salary deductions visible within organization"
+on salary_deductions for select
+using (
+  organization_id = (
+    select organization_id from profiles where id = auth.uid()
+  )
+);
+
+create policy "salary deductions managed by organization admins"
+on salary_deductions for all
+using (
+  exists (
+    select 1 from profiles
+    where id = auth.uid()
+      and organization_id = salary_deductions.organization_id
+      and role in ('admin', 'owner')
+  )
+)
+with check (
+  exists (
+    select 1 from profiles
+    where id = auth.uid()
+      and organization_id = salary_deductions.organization_id
+      and role in ('admin', 'owner')
+  )
+);
+
+create policy "salary payments visible within organization"
+on salary_payments for select
+using (
+  organization_id = (
+    select organization_id from profiles where id = auth.uid()
+  )
+);
+
+create policy "salary payments managed by organization admins"
+on salary_payments for all
+using (
+  exists (
+    select 1 from profiles
+    where id = auth.uid()
+      and organization_id = salary_payments.organization_id
+      and role in ('admin', 'owner')
+  )
+)
+with check (
+  exists (
+    select 1 from profiles
+    where id = auth.uid()
+      and organization_id = salary_payments.organization_id
+      and role in ('admin', 'owner')
+  )
+);
+
+create policy "staff attendance visible within organization"
+on staff_attendance for select
+using (
+  organization_id = (
+    select organization_id from profiles where id = auth.uid()
+  )
+);
+
+create policy "staff attendance managed by organization admins"
+on staff_attendance for all
+using (
+  exists (
+    select 1 from profiles
+    where id = auth.uid()
+      and organization_id = staff_attendance.organization_id
+      and role in ('admin', 'owner')
+  )
+)
+with check (
+  exists (
+    select 1 from profiles
+    where id = auth.uid()
+      and organization_id = staff_attendance.organization_id
+      and role in ('admin', 'owner')
+  )
+);
+
+create policy "leave requests visible within organization"
+on staff_leave_requests for select
+using (
+  organization_id = (
+    select organization_id from profiles where id = auth.uid()
+  )
+);
+
+create policy "leave requests managed by organization admins"
+on staff_leave_requests for all
+using (
+  exists (
+    select 1 from profiles
+    where id = auth.uid()
+      and organization_id = staff_leave_requests.organization_id
+      and role in ('admin', 'owner')
+  )
+)
+with check (
+  exists (
+    select 1 from profiles
+    where id = auth.uid()
+      and organization_id = staff_leave_requests.organization_id
+      and role in ('admin', 'owner')
+  )
+);
+
+create policy "payslip line items visible within organization"
+on payslip_line_items for select
+using (
+  exists (
+    select 1 from payslips
+    where id = payslip_line_items.payslip_id
+      and organization_id = (
+        select organization_id from profiles where id = auth.uid()
+      )
   )
 );

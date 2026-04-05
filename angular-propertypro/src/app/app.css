@@ -1,0 +1,50 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle at top, rgba(236, 253, 245, 0.95), rgba(229, 249, 236, 0.88) 30%, rgba(245, 251, 243, 1) 100%);
+}
+
+.app-content {
+  flex: 1;
+  width: 100%;
+}
+
+.app-footer {
+  margin-top: auto;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.app-footer__inner {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  padding: 1.1rem 1.5rem;
+  border: 1px solid rgba(15, 118, 110, 0.08);
+  border-radius: 1.5rem;
+  background: #ffffff;
+  box-shadow: 0 20px 45px rgba(15, 60, 47, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.app-footer__logo {
+  height: 2.75rem;
+  width: auto;
+  display: block;
+}
+
+.app-footer__text {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+  text-align: center;
+}

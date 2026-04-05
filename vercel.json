@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "buildCommand": "cd angular-propertypro && npm ci --prefer-offline && npm run build -- --configuration production",
+  "outputDirectory": "angular-propertypro/dist/angular-propertypro/browser",
+  "installCommand": "cd angular-propertypro && npm ci --prefer-offline",
+  "env": {
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "PAYSTACK_PUBLIC_KEY": "@paystack_public_key",
+    "PAYSTACK_SECRET_KEY": "@paystack_secret_key"
+  },
+  "rewrites": [
+    {
+      "source": "/api/paystack/webhook",
+      "destination": "/api/paystack/webhook.ts"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

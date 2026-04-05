@@ -1,0 +1,328 @@
+<div class="admin-dashboard min-h-screen bg-gray-50">
+
+  <!-- Header -->
+  <section class="dashboard-header bg-white border-b border-gray-200 py-6">
+    <div class="container mx-auto px-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">
+            Admin Dashboard - System Overview
+          </h1>
+          <p class="text-gray-600 mt-2">Platform Administration &bull; {{ currentDate | date:'fullDate' }}</p>
+        </div>
+        <div class="text-right">
+          <div class="system-status">
+            <span class="status-label">System Status:</span>
+            <span class="status-value operational">All Systems Operational</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Dashboard -->
+  <div class="container mx-auto px-6 py-8">
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <section class="mb-8">
+        <div class="loading-spinner">
+          <div class="flex items-center gap-3">
+            <svg class="animate-spin h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-gray-500">Loading dashboard data...</span>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+      <div class="error-state">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="font-medium">{{ error() }}</span>
+        </div>
+      </div>
+    }
+
+    @if (!loading()) {
+      <!-- System Metrics -->
+      <section class="system-metrics mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Total Users -->
+          <div class="metric-card">
+            <div class="metric-icon users">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+            </div>
+            <div class="metric-content">
+              <p class="metric-label">Total Users</p>
+              <p class="metric-value">{{ totalUsers() }}</p>
+              <p class="metric-change positive">{{ allUsers().length }} registered</p>
+            </div>
+          </div>
+
+          <!-- Active Properties -->
+          <div class="metric-card">
+            <div class="metric-icon properties">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+              </svg>
+            </div>
+            <div class="metric-content">
+              <p class="metric-label">Active Properties</p>
+              <p class="metric-value">{{ totalProperties() }}</p>
+              <p class="metric-change positive">{{ allProperties().length }} listed</p>
+            </div>
+          </div>
+
+          <!-- Total Invoices / Transactions -->
+          <div class="metric-card">
+            <div class="metric-icon transactions">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+              </svg>
+            </div>
+            <div class="metric-content">
+              <p class="metric-label">Total Invoices</p>
+              <p class="metric-value">{{ totalInvoices() }}</p>
+              <p class="metric-change positive">{{ activeTenants() }} active tenants</p>
+            </div>
+          </div>
+
+          <!-- Revenue -->
+          <div class="metric-card">
+            <div class="metric-icon revenue">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+              </svg>
+            </div>
+            <div class="metric-content">
+              <p class="metric-label">Total Revenue</p>
+              <p class="metric-value">{{ formatCurrency(totalRevenue()) }}</p>
+              @if (outstandingInvoices() > 0) {
+                <p class="metric-change negative">{{ formatCurrency(outstandingInvoices()) }} outstanding</p>
+              } @else {
+                <p class="metric-change positive">All invoices settled</p>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Occupancy & Maintenance -->
+      <section class="mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="metric-card">
+            <div class="metric-icon properties">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+              </svg>
+            </div>
+            <div class="metric-content">
+              <p class="metric-label">Occupancy Rate</p>
+              <p class="metric-value">{{ occupancyRate().toFixed(1) }}%</p>
+              <p class="metric-change positive">{{ activeTenants() }} active tenants</p>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon transactions">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </div>
+            <div class="metric-content">
+              <p class="metric-label">Pending Maintenance</p>
+              <p class="metric-value">{{ pendingMaintenance() }}</p>
+              <p class="metric-change positive">Requires attention</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pending Tenant Applications -->
+      @if (pendingApplications().length > 0) {
+        <section class="data-table-card mb-8">
+          <div class="card-header">
+            <h2 class="section-subtitle">Pending Tenant Applications</h2>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Applicant</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Applied</th>
+                  <th>Payment Method</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (app of pendingApplications(); track app.id) {
+                  <tr>
+                    <td class="font-medium">{{ app.profile_id || 'N/A' }}</td>
+                    <td class="capitalize">{{ app.role }}</td>
+                    <td>
+                      <span class="status-badge {{ app.status }}">{{ app.status }}</span>
+                    </td>
+                    <td>{{ formatDate(app.created_at) }}</td>
+                    <td>{{ app.preferred_payment_method || 'Not specified' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
+
+      <!-- Recent Audit Logs -->
+      @if (recentAuditLogs().length > 0) {
+        <section class="data-table-card mb-8">
+          <div class="card-header">
+            <h2 class="section-subtitle">Recent Audit Logs</h2>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>User</th>
+                  <th>Action</th>
+                  <th>Table</th>
+                  <th>Record ID</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (log of recentAuditLogs(); track log.id) {
+                  <tr>
+                    <td class="text-sm text-gray-500">{{ formatDateTime(log.created_at) }}</td>
+                    <td class="font-medium">{{ log.user_id || 'System' }}</td>
+                    <td class="capitalize">{{ log.action }}</td>
+                    <td class="font-mono text-xs">{{ log.table_affected }}</td>
+                    <td class="text-sm text-gray-500">{{ log.record_id || '-' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </section>
+      }
+
+      <!-- Management Actions -->
+      <section class="management-actions">
+        <h2 class="section-title">System Management</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- User Management -->
+          <div class="action-card">
+            <div class="action-icon users">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+            </div>
+            <div class="action-content">
+              <h3>User Management</h3>
+              <p>Manage user accounts, roles, and permissions</p>
+              <button class="btn-secondary">Manage Users</button>
+            </div>
+          </div>
+
+          <!-- Property Management -->
+          <div class="action-card">
+            <div class="action-icon properties">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+              </svg>
+            </div>
+            <div class="action-content">
+              <h3>Property Management</h3>
+              <p>Oversee property listings and configurations</p>
+              <button class="btn-secondary">Manage Properties</button>
+            </div>
+          </div>
+
+          <!-- System Reports -->
+          <div class="action-card">
+            <div class="action-icon reports">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </div>
+            <div class="action-content">
+              <h3>System Reports</h3>
+              <p>View analytics and generate reports</p>
+              <button class="btn-secondary">View Reports</button>
+            </div>
+          </div>
+
+          <!-- System Settings -->
+          <div class="action-card">
+            <div class="action-icon settings">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </div>
+            <div class="action-content">
+              <h3>System Settings</h3>
+              <p>Configure platform settings and preferences</p>
+              <button class="btn-secondary">System Settings</button>
+            </div>
+          </div>
+
+          <!-- Security & Access -->
+          <div class="action-card">
+            <div class="action-icon security">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+            </div>
+            <div class="action-content">
+              <h3>Security &amp; Access</h3>
+              <p>Manage security settings and access controls</p>
+              <button class="btn-secondary">Security Settings</button>
+            </div>
+          </div>
+
+          <!-- Support Center -->
+          <div class="action-card">
+            <div class="action-icon support">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <div class="action-content">
+              <h3>Support Center</h3>
+              <p>Access help resources and support tickets</p>
+              <button class="btn-secondary">Support Center</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 py-6 mt-auto">
+    <div class="container mx-auto px-6">
+      <div class="flex items-center justify-center">
+        <div class="flex items-center space-x-2">
+          <img src="/wiseworx-logo.svg" alt="WiseWorx" class="h-10 w-auto object-contain" />
+        </div>
+      </div>
+      <p class="text-center text-gray-500 text-xs mt-3">
+        &copy; {{ currentYear }} WiseWorx. PropertyPro&trade; Platform.
+      </p>
+    </div>
+  </footer>
+
+</div>

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "buildCommand": "ng build --configuration production",
+  "outputDirectory": "dist/angular-propertypro/browser",
+  "env": {
+    "PAYSTACK_PUBLIC_KEY": "@paystack_public_key",
+    "PAYSTACK_SECRET_KEY": "@paystack_secret_key"
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
