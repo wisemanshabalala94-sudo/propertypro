@@ -6,7 +6,18 @@ import { HeaderComponent } from './header.component';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, HeaderComponent],
-  templateUrl: './app.html',
-  styleUrls: ['./app.css']
+  template: `
+    <div class="app-shell">
+      <app-header></app-header>
+      <main class="app-content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  `,
+  styles: [`
+    :host { display: block; min-height: 100vh; }
+    .app-shell { min-height: 100vh; display: flex; flex-direction: column; background: #F9FAFB; }
+    .app-content { flex: 1; width: 100%; }
+  `]
 })
 export class App {}

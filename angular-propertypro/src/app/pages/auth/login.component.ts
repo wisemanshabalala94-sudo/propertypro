@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserRole } from '../../core/models/domain.models';
@@ -7,104 +8,91 @@ import { UserRole } from '../../core/models/domain.models';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule],
   template: `
-    <section class="auth-shell">
-      <div class="form-panel">
-        <h2>Welcome back to Wiseworx</h2>
-        <p>Sign in to access your dashboard and workflow tools.</p>
+    <section class="login-page">
+      <div class="login-card">
+        <div class="login-card__brand">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect width="40" height="40" rx="10" fill="#7C3AED"/>
+            <path d="M10 28L20 10L30 28" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 22h12" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <span class="login-card__title">PropertyPro</span>
+          <p class="login-card__subtitle">Sign in to your account</p>
+        </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="submit()">
-          <label>Email</label>
-          <input formControlName="email" type="email" placeholder="you@company.com" />
+        <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input formControlName="email" type="email" placeholder="you@company.com" class="form-input" />
+            @if (loginForm.controls.email.invalid && loginForm.controls.email.touched) {
+              <small class="form-error">Enter a valid email</small>
+            }
+          </div>
 
-          <label>Password</label>
-          <input formControlName="password" type="password" placeholder="Enter password" />
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input formControlName="password" type="password" placeholder="Enter password" class="form-input" />
+            @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
+              <small class="form-error">Password is required</small>
+            }
+          </div>
 
-          <label>Role</label>
-          <select formControlName="role">
-            <option value="tenant">Tenant</option>
-            <option value="owner">Owner</option>
-            <option value="staff">Staff</option>
-            <option value="admin">Admin</option>
-          </select>
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <select formControlName="role" class="form-select">
+              <option value="tenant">Tenant</option>
+              <option value="owner">Owner</option>
+              <option value="staff">Staff</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
 
-          <button type="submit" [disabled]="loginForm.invalid">Sign in</button>
+          <button type="submit" class="btn btn-primary btn-lg" [disabled]="loginForm.invalid || submitting">
+            @if (submitting) { <span class="spinner spinner--sm"></span> }
+            {{ submitting ? 'Signing in...' : 'Sign In' }}
+          </button>
         </form>
 
-        <p class="helper-text">
-          New here? <a routerLink="/signup/tenant">Tenant Signup</a> or <a routerLink="/signup/owner">Owner Signup</a>
-        </p>
+        <div class="login-footer">
+          <p>New here? <a routerLink="/signup/tenant">Tenant Signup</a> or <a routerLink="/signup/owner">Owner Signup</a></p>
+        </div>
       </div>
     </section>
   `,
-  styles: [
-    `
-      .auth-shell {
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        padding: 2rem;
-        background: radial-gradient(circle at top, #ecfdf5, #f5fbf6);
-      }
-      .form-panel {
-        max-width: 420px;
-        width: 100%;
-        background: white;
-        border-radius: 1.75rem;
-        box-shadow: 0 32px 90px rgba(15, 60, 47, 0.12);
-        padding: 2.5rem;
-      }
-      h2 {
-        margin: 0 0 0.75rem;
-        color: #0f392a;
-      }
-      p {
-        color: #4b5563;
-        line-height: 1.7;
-      }
-      label {
-        display: block;
-        margin-top: 1rem;
-        color: #166534;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-      }
-      input, select {
-        width: 100%;
-        padding: 0.95rem 1rem;
-        margin-top: 0.5rem;
-        border: 1px solid #d1fae5;
-        border-radius: 1rem;
-        background: #f8faf9;
-      }
-      button {
-        width: 100%;
-        margin-top: 1.5rem;
-        padding: 1rem;
-        background: #10b981;
-        color: white;
-        border: none;
-        border-radius: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-      }
-      button:disabled {
-        opacity: 0.65;
-        cursor: not-allowed;
-      }
-      .helper-text {
-        margin-top: 1.5rem;
-        color: #4b5563;
-      }
-      a {
-        color: #10b981;
-      }
-    `
-  ]
+  styles: [`
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 50%, #F9FAFB 100%);
+    }
+    .login-card {
+      background: white;
+      border-radius: 1rem;
+      padding: 2.5rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      border: 1px solid #E5E7EB;
+      width: 100%;
+      max-width: 28rem;
+    }
+    .login-card__brand { text-align: center; margin-bottom: 2rem; }
+    .login-card__title { display: block; font-size: 1.5rem; font-weight: 700; color: #1F2937; margin-top: 0.75rem; }
+    .login-card__subtitle { font-size: 0.875rem; color: #6B7280; margin-top: 0.25rem; }
+    .login-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-error { color: #EF4444; font-size: 0.75rem; margin-top: 0.25rem; }
+    .login-footer { text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #E5E7EB; font-size: 0.875rem; color: #6B7280; }
+    .login-footer a { color: #7C3AED; font-weight: 500; text-decoration: none; }
+    .login-footer a:hover { text-decoration: underline; }
+    .spinner--sm { width: 1rem; height: 1rem; border-width: 2px; display: inline-block; vertical-align: middle; margin-right: 0.5rem; }
+  `]
 })
 export class LoginComponent {
   loginForm = this.createForm();
+  submitting = false;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {}
 
@@ -112,19 +100,19 @@ export class LoginComponent {
     return this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
-      role: ['tenant', Validators.required]
+      role: ['tenant' as UserRole, Validators.required]
     });
   }
 
   async submit() {
-    if (this.loginForm.invalid) {
-      return;
+    if (this.loginForm.invalid || this.submitting) return;
+    this.submitting = true;
+    try {
+      const { email, password, role } = this.loginForm.value;
+      await this.auth.signIn(email || '', password || '', (role || 'tenant') as UserRole);
+      this.auth.redirectToDashboard();
+    } finally {
+      this.submitting = false;
     }
-    const { email, password, role } = this.loginForm.value;
-    const emailVal = email || '';
-    const passwordVal = password || '';
-    const roleVal = (role || 'tenant') as UserRole;
-    await this.auth.signIn(emailVal, passwordVal, roleVal);
-    this.auth.redirectToDashboard();
   }
 }
