@@ -8,9 +8,6 @@ import { TenantDashboardComponent } from './tenant-dashboard.component';
 import { OwnerDashboardComponent } from './owner-dashboard.component';
 import { StaffDashboardComponent } from './staff-dashboard.component';
 import { AdminDashboardComponent } from './admin-dashboard.component';
-import { PayrollSummaryComponent } from './pages/payroll/payroll-summary.component';
-import { PayslipListComponent } from './pages/payroll/payslip-list.component';
-import { PayslipDetailComponent } from './pages/payroll/payslip-detail.component';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
@@ -20,59 +17,9 @@ export const routes: Routes = [
   { path: 'signup/tenant', component: TenantSignupComponent },
   { path: 'signup/owner', component: OwnerSignupComponent },
   { path: 'tenant/pending', component: TenantPendingComponent },
-  {
-    path: 'tenant/dashboard',
-    component: TenantDashboardComponent,
-    canActivate: [roleGuard],
-    data: { role: 'tenant' }
-  },
-  {
-    path: 'owner/dashboard',
-    component: OwnerDashboardComponent,
-    canActivate: [roleGuard],
-    data: { role: 'owner' }
-  },
-  {
-    path: 'owner/payslips',
-    component: PayslipListComponent,
-    canActivate: [roleGuard],
-    data: { role: 'owner' }
-  },
-  {
-    path: 'owner/payslips/:id',
-    component: PayslipDetailComponent,
-    canActivate: [roleGuard],
-    data: { role: 'owner' }
-  },
-  {
-    path: 'staff/dashboard',
-    component: StaffDashboardComponent,
-    canActivate: [roleGuard],
-    data: { role: 'staff' }
-  },
-  {
-    path: 'staff/payroll',
-    component: PayrollSummaryComponent,
-    canActivate: [roleGuard],
-    data: { role: 'staff' }
-  },
-  {
-    path: 'staff/payslips',
-    component: PayslipListComponent,
-    canActivate: [roleGuard],
-    data: { role: 'staff' }
-  },
-  {
-    path: 'staff/payslips/:id',
-    component: PayslipDetailComponent,
-    canActivate: [roleGuard],
-    data: { role: 'staff' }
-  },
-  {
-    path: 'admin/dashboard',
-    component: AdminDashboardComponent,
-    canActivate: [roleGuard],
-    data: { role: 'admin' }
-  },
+  { path: 'tenant/dashboard', component: TenantDashboardComponent, canActivate: [roleGuard], data: { role: 'tenant' } },
+  { path: 'owner/dashboard', component: OwnerDashboardComponent, canActivate: [roleGuard], data: { role: 'owner' } },
+  { path: 'staff/dashboard', component: StaffDashboardComponent, canActivate: [roleGuard], data: { role: 'staff' } },
+  { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [roleGuard], data: { role: 'admin' } },
   { path: '**', redirectTo: '' }
 ];
