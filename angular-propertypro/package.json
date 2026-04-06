@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "ng build",
-    "dev": "ng serve --host 0.0.0.0 --port 4200",
+    "dev": "ng serve --host 0.0.0.0 --port 3000",
     "preview": "npx serve -s dist/angular-propertypro/browser",
     "test": "ng test"
   },
