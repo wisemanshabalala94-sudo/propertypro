@@ -40,7 +40,7 @@ interface MaintForm { title: string; description: string; category: string; prio
               Pay Now
             </button>
           } @else {
-            <div class="paid-badge"><svg width="24" height="24" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>All caught up!</span></div>
+            <div class="paid-badge"><svg width="24" height="24" fill="none" stroke="#7C3AED" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>All caught up!</span></div>
           }
         </div>
       </section>

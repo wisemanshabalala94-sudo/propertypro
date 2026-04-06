@@ -55,7 +55,7 @@ import { RouterLink } from '@angular/router';
         <div class="features__grid">
           <div class="feature-card"><div class="feature-card__icon feature-card__icon--purple"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><h3>Automated Invoicing</h3><p>Generate rent invoices automatically with Paystack integration.</p></div>
           <div class="feature-card"><div class="feature-card__icon feature-card__icon--blue"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><h3>Maintenance Tracking</h3><p>Tenants submit requests, staff get assigned and close jobs.</p></div>
-          <div class="feature-card"><div class="feature-card__icon feature-card__icon--green"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div><h3>Tenant Onboarding</h3><p>Full application flow with ID verification and approval.</p></div>
+          <div class="feature-card"><div class="feature-card__icon feature-card__icon--purple"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div><h3>Tenant Onboarding</h3><p>Full application flow with ID verification and approval.</p></div>
           <div class="feature-card"><div class="feature-card__icon feature-card__icon--amber"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div><h3>Financial Reports</h3><p>Cash flow, occupancy rates, and expense tracking.</p></div>
           <div class="feature-card"><div class="feature-card__icon feature-card__icon--red"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3>Staff Shift Management</h3><p>Clock in/out with 8-hour validation and task queues.</p></div>
           <div class="feature-card"><div class="feature-card__icon feature-card__icon--indigo"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Audit &amp; Compliance</h3><p>Full audit trail of every action with RLS policies.</p></div>
@@ -72,6 +72,14 @@ import { RouterLink } from '@angular/router';
           <div class="pricing-card"><div class="pricing-card__tier">Unlimited</div><div class="pricing-card__price">R1,999<span>/mo</span></div><ul class="pricing-card__features"><li>Unlimited Properties</li><li>Unlimited Units</li><li>API Access</li><li>White-Label</li></ul><a routerLink="/signup/owner" class="btn btn-secondary" style="width:100%">Contact Sales</a></div>
         </div>
       </section>
+
+      <!-- WiseWorx Footer -->
+      <footer class="landing-footer">
+        <div class="landing-footer__inner">
+          <img src="/wiseworx-logo.svg" alt="WiseWorx logo" class="landing-footer__logo" />
+          <p class="landing-footer__text">&copy; {{ currentYear }} WiseWorx. PropertyPro&trade; Platform.</p>
+        </div>
+      </footer>
     </main>
   `,
   styles: [`
@@ -103,7 +111,7 @@ import { RouterLink } from '@angular/router';
     .feature-card { padding: 2rem; border-radius: 0.75rem; border: 1px solid #E5E7EB; transition: all 0.2s ease; }
     .feature-card:hover { border-color: #C4B5FD; box-shadow: 0 4px 12px rgba(124,58,237,0.08); transform: translateY(-2px); }
     .feature-card__icon { width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; margin-bottom: 1rem; }
-    .feature-card__icon--purple { background: #F5F3FF; color: #7C3AED; } .feature-card__icon--blue { background: #DBEAFE; color: #3B82F6; } .feature-card__icon--green { background: #D1FAE5; color: #10B981; } .feature-card__icon--amber { background: #FEF3C7; color: #F59E0B; } .feature-card__icon--red { background: #FEE2E2; color: #EF4444; } .feature-card__icon--indigo { background: #E0E7FF; color: #6366F1; }
+    .feature-card__icon--purple { background: #F5F3FF; color: #7C3AED; } .feature-card__icon--blue { background: #DBEAFE; color: #3B82F6; } .feature-card__icon--amber { background: #FEF3C7; color: #F59E0B; } .feature-card__icon--red { background: #FEE2E2; color: #EF4444; } .feature-card__icon--indigo { background: #E0E7FF; color: #6366F1; }
     .feature-card h3 { font-size: 1rem; font-weight: 600; color: #1F2937; margin: 0 0 0.5rem; }
     .feature-card p { font-size: 0.875rem; color: #6B7280; line-height: 1.6; margin: 0; }
     .pricing { padding: 6rem 2rem; background: #F9FAFB; }
@@ -119,11 +127,16 @@ import { RouterLink } from '@angular/router';
     .pricing-card__features { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
     .pricing-card__features li { font-size: 0.875rem; color: #4B5563; display: flex; align-items: center; gap: 0.5rem; }
     .pricing-card__features li::before { content: '✓'; color: #7C3AED; font-weight: 700; }
+    .landing-footer { padding: 2rem; background: white; border-top: 1px solid #E5E7EB; }
+    .landing-footer__inner { max-width: 1100px; margin: 0 auto; padding: 1.5rem; border-radius: 1rem; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+    .landing-footer__logo { height: 2.5rem; width: auto; }
+    .landing-footer__text { margin: 0; color: #6B7280; font-size: 0.875rem; }
     @media (max-width: 1024px) { .role-cards { grid-template-columns: repeat(2, 1fr); } .features__grid { grid-template-columns: repeat(2, 1fr); } .pricing__grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 640px) { .hero__card { padding: 1.5rem; } .role-cards { grid-template-columns: repeat(2, 1fr); } .features__grid { grid-template-columns: 1fr; } .pricing__grid { grid-template-columns: 1fr; } .hero__actions { flex-direction: column; } .hero__actions .btn { width: 100%; } }
   `]
 })
 export class LandingComponent {
+  protected readonly currentYear = new Date().getFullYear();
   protected scrollY = 0;
   get bgOffset(): string { return (this.scrollY * 0.2).toFixed(1); }
   get contentOffset(): string { return (this.scrollY * -0.3).toFixed(1); }

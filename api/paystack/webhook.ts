@@ -27,7 +27,7 @@ const handler: Handler = async (req, res) => {
     if (invoiceId) {
       try {
         const url = process.env.SUPABASE_URL;
-        const key = process.env.SUPABASE_SERVICE_KEY;
+        const key = process.env.SUPABASE_SERVICE_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
         if (url && key) {
           await fetch(`${url}/rest/v1/invoices?id=eq.${invoiceId}`, {
             method: 'PATCH',

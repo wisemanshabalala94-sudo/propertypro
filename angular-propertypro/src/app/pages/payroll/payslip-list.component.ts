@@ -59,7 +59,7 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
       }
       .page-header span {
         display: inline-block;
-        color: #047857;
+        color: #7C3AED;
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.35em;
@@ -75,7 +75,7 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         line-height: 1.8;
       }
       .primary-btn {
-        background: #10b981;
+        background: #7C3AED;
         color: white;
         min-height: 3.75rem;
         border: none;
@@ -89,7 +89,7 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         border-radius: 1.75rem;
         overflow: hidden;
         background: white;
-        box-shadow: 0 30px 80px rgba(15, 60, 47, 0.08);
+        box-shadow: 0 30px 80px rgba(124, 58, 237, 0.08);
       }
       .table-header,
       .table-row {
@@ -100,8 +100,8 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         align-items: center;
       }
       .table-header {
-        background: #f3faf6;
-        color: #065f46;
+        background: #f3f0ff;
+        color: #7C3AED;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.02em;
@@ -112,7 +112,7 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         transition: background 0.2s ease;
       }
       .table-row:hover {
-        background: #f8fffa;
+        background: #f5f3ff;
       }
       .status {
         text-transform: capitalize;
@@ -122,10 +122,10 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         color: #b45309;
       }
       .status.processed {
-        color: #047857;
+        color: #7C3AED;
       }
       .status.paid {
-        color: #0c4a6e;
+        color: #4338CA;
       }
       .status.cancelled {
         color: #991b1b;
@@ -136,7 +136,7 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         text-align: center;
         background: white;
         border-radius: 1.75rem;
-        box-shadow: 0 30px 80px rgba(15, 60, 47, 0.08);
+        box-shadow: 0 30px 80px rgba(124, 58, 237, 0.08);
       }
       .empty-state p {
         margin: 0 0 1.5rem;
@@ -149,8 +149,8 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         min-height: 3.75rem;
         padding: 0 1.5rem;
         border-radius: 1rem;
-        background: #f3faf6;
-        color: #065f46;
+        background: #f3f0ff;
+        color: #4338CA;
         font-weight: 700;
       }
       @media (max-width: 860px) {

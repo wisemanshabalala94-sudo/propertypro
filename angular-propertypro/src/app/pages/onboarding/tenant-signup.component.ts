@@ -258,7 +258,7 @@ interface TenantOnboardingPayload {
 
     .eyebrow {
       margin: 0 0 0.5rem;
-      color: #10b981;
+      color: #7C3AED;
       font-size: 0.9rem;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -286,7 +286,7 @@ interface TenantOnboardingPayload {
 
     .progress-bar {
       height: 100%;
-      background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+      background: linear-gradient(90deg, #7C3AED 0%, #8B5CF6 100%);
       transition: width 180ms ease-in-out;
     }
 
@@ -305,8 +305,8 @@ interface TenantOnboardingPayload {
     }
 
     .step-pill.active {
-      background: rgba(16, 185, 129, 0.12);
-      color: #047857;
+      background: rgba(124, 58, 237, 0.12);
+      color: #7C3AED;
     }
 
     .form-grid,
@@ -350,9 +350,9 @@ interface TenantOnboardingPayload {
     }
 
     input:focus {
-      outline: 2px solid rgba(16, 185, 129, 0.22);
+      outline: 2px solid rgba(124, 58, 237, 0.22);
       outline-offset: 1px;
-      border-color: #10b981;
+      border-color: #7C3AED;
     }
 
     small {
@@ -407,11 +407,11 @@ interface TenantOnboardingPayload {
 
     .alert-box {
       margin-top: 1rem;
-      border-left: 4px solid #10b981;
-      background: #ecfdf5;
+      border-left: 4px solid #7C3AED;
+      background: #F5F3FF;
       padding: 1rem;
       border-radius: 0.85rem;
-      color: #065f46;
+      color: #5B21B6;
     }
 
     .form-actions,
@@ -439,7 +439,7 @@ interface TenantOnboardingPayload {
 
     .primary-button,
     .primary-link {
-      background: #10b981;
+      background: #7C3AED;
       color: #ffffff;
     }
 

@@ -64,7 +64,7 @@ Rules:
 5. Never share sensitive information`;
   }
 
-  private getSuggestedQuestions(role: string): AiSuggestedQuestion[] {
+  private getSuggestedQuestionSet(role: string): AiSuggestedQuestion[] {
     const base: Record<string, AiSuggestedQuestion[]> = {
       owner: [
         { question: 'How do I approve a tenant?', category: 'action' },
@@ -100,6 +100,10 @@ Rules:
     return base[role] ?? base.tenant;
   }
 
+  getSuggestedQuestions(role: string): AiSuggestedQuestion[] {
+    return this.getSuggestedQuestionSet(role);
+  }
+
   private generateId(): string { return `id_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`; }
 
   private detectAction(content: string): AiAction[] | undefined {
@@ -115,16 +119,20 @@ Rules:
 
   private async callQwenApi(messages: { role: string; content: string }[]): Promise<string> {
     try {
-      const response = await fetch('https://api.qwen.ai/v1/chat/completions', {
+      const response = await fetch('/api/qwen/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.QWEN_API_KEY ?? ''}` },
-        body: JSON.stringify({ model: 'qwen-max', messages, temperature: 0.7, max_tokens: 2000 })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages })
       });
-      if (!response.ok) throw new Error(`API error: ${response.status}`);
-      const data = (await response.json()) as { choices?: Array<{ message?: { content?: string } }> };
-      return data.choices?.[0]?.message?.content ?? 'I could not process your request. Please try again.';
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Qwen proxy error: ${response.status} ${errorText}`);
+      }
+
+      const data = await response.json() as { content?: string };
+      return data.content ?? 'I could not process your request. Please try again.';
     } catch (err) {
-      // Fallback: generate contextual response based on keywords
       const lastMsg = messages[messages.length - 1]?.content.toLowerCase() ?? '';
       if (lastMsg.includes('pay') || lastMsg.includes('rent')) {
         return 'To pay your rent, go to your Dashboard > Payments tab and click "Pay Now". You can pay via Paystack using card or bank transfer. Would you like me to take you there?';

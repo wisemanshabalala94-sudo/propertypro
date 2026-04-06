@@ -27,8 +27,8 @@
   --gray-900: #111827;
 
   /* Semantic */
-  --success: #10B981;
-  --success-light: #D1FAE5;
+  --success: #7C3AED;
+  --success-light: #EDE9FE;
   --warning: #F59E0B;
   --warning-light: #FEF3C7;
   --error: #EF4444;
@@ -190,7 +190,7 @@ body {
   letter-spacing: 0.025em;
 }
 
-.badge-success { background: var(--success-light); color: #065F46; }
+.badge-success { background: var(--success-light); color: var(--primary); }
 .badge-warning { background: var(--warning-light); color: #92400E; }
 .badge-error { background: var(--error-light); color: #991B1B; }
 .badge-info { background: var(--info-light); color: #1E40AF; }

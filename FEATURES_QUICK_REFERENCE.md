@@ -25,7 +25,7 @@ PropertyPro is a **complete property management platform** that handles:
 **Visual Features**:
 - 5 stylized 3D buildings with windows (CSS animation)
 - Floating lights below buildings
-- Green Wiseworx branding
+- Purple Wiseworx branding
 - Responsive 1-2 column layout
 
 ### Header (All Pages) ✅

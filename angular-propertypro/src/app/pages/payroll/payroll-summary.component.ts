@@ -50,7 +50,7 @@ import { PayrollService } from '../../services/payroll.service';
       }
       .page-title span {
         display: inline-block;
-        color: #047857;
+        color: #7C3AED;
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.35em;
@@ -75,7 +75,7 @@ import { PayrollService } from '../../services/payroll.service';
         padding: 2rem;
         border-radius: 1.75rem;
         background: white;
-        box-shadow: 0 30px 80px rgba(15, 60, 47, 0.08);
+        box-shadow: 0 30px 80px rgba(124, 58, 237, 0.08);
       }
       .summary-card span {
         display: block;
@@ -86,7 +86,7 @@ import { PayrollService } from '../../services/payroll.service';
       .summary-card strong {
         display: block;
         font-size: 2.25rem;
-        color: #0f5132;
+        color: #374151;
       }
       .action-panel {
         margin-top: 2rem;
@@ -105,12 +105,12 @@ import { PayrollService } from '../../services/payroll.service';
         font-weight: 700;
       }
       .action-btn {
-        background: #10b981;
+        background: #7C3AED;
         color: white;
       }
       .secondary-btn {
         background: #f3faf6;
-        color: #065f46;
+        color: #6B7280;
       }
       @media (max-width: 960px) {
         .summary-grid {

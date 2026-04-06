@@ -448,7 +448,7 @@ interface ExpenseFormData {
     .btn-primary { background: #7C3AED; color: white; border-color: #7C3AED; } .btn-primary:hover { background: #6D28D9; }
     .btn-secondary { background: white; color: #374151; border-color: #D1D5DB; } .btn-secondary:hover { background: #F9FAFB; }
     .badge { display: inline-flex; align-items: center; padding: 0.25rem 0.625rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.025em; }
-    .badge-purple { background: #F5F3FF; color: #7C3AED; } .badge-success { background: #D1FAE5; color: #065F46; } .badge-warning { background: #FEF3C7; color: #92400E; } .badge-error { background: #FEE2E2; color: #991B1B; } .badge-info { background: #DBEAFE; color: #1E40AF; }
+    .badge-purple { background: #F5F3FF; color: #7C3AED; } .badge-success { background: #EDE9FE; color: #7C3AED; } .badge-warning { background: #FEF3C7; color: #92400E; } .badge-error { background: #FEE2E2; color: #991B1B; } .badge-info { background: #DBEAFE; color: #1E40AF; }
     .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #E5E7EB; overflow: hidden; }
     .card-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #F3F4F6; display: flex; align-items: center; justify-content: space-between; }
     .card-title { font-size: 1rem; font-weight: 600; color: #1F2937; }

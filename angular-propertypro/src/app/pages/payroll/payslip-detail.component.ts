@@ -85,7 +85,7 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         align-items: center;
       }
       .detail-header span {
-        color: #047857;
+        color: #7C3AED;
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.35em;
@@ -114,13 +114,13 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         font-weight: 700;
       }
       .primary-btn {
-        background: #10b981;
+        background: #7C3AED;
         color: white;
         border: none;
       }
       .secondary-btn {
-        background: #f3faf6;
-        color: #065f46;
+        background: #f3f0ff;
+        color: #4338CA;
       }
       .detail-grid {
         display: grid;
@@ -132,7 +132,7 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         background: white;
         border-radius: 1.75rem;
         padding: 2rem;
-        box-shadow: 0 30px 80px rgba(15, 60, 47, 0.08);
+        box-shadow: 0 30px 80px rgba(124, 58, 237, 0.08);
       }
       dl {
         margin: 0;
@@ -144,7 +144,7 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
       dd {
         margin: 0.35rem 0 0;
         font-weight: 700;
-        color: #0f5132;
+        color: #374151;
       }
       .line-items {
         margin-top: 2.5rem;
@@ -157,21 +157,21 @@ import { PayrollService, Payslip } from '../../services/payroll.service';
         background: white;
         border-radius: 1rem;
         margin-bottom: 0.75rem;
-        box-shadow: 0 20px 60px rgba(15, 60, 47, 0.06);
+        box-shadow: 0 20px 60px rgba(124, 58, 237, 0.06);
       }
       .notes-card {
         margin-top: 2rem;
         padding: 2rem;
         background: white;
         border-radius: 1.75rem;
-        box-shadow: 0 30px 80px rgba(15, 60, 47, 0.08);
+        box-shadow: 0 30px 80px rgba(124, 58, 237, 0.08);
       }
       .empty-state {
         text-align: center;
         padding: 3rem;
         background: white;
         border-radius: 1.75rem;
-        box-shadow: 0 30px 80px rgba(15, 60, 47, 0.08);
+        box-shadow: 0 30px 80px rgba(124, 58, 237, 0.08);
       }
       .empty-state h1 {
         margin: 0;

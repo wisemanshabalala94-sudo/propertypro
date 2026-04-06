@@ -17,7 +17,7 @@ PropertyPro by Wiseworx is a **fully-functional, production-deployed property ma
 - ✅ 4 role-based dashboards (owner, tenant, staff, admin)
 - ✅ Authentication system with signup flows
 - ✅ Payroll management module (3 pages)
-- ✅ Professional UI with Wiseworx green branding
+- ✅ Professional UI with Wiseworx purple branding
 - ✅ 3D CSS-animated landing page
 - ✅ Fixed hero copy and integrated logo
 - ✅ Role-based access control with route guards
@@ -86,7 +86,7 @@ Vercel Config:
   - [x] Dark gradient background (blue to blue gradient)
   
 - [x] Stats cards: "Tenant workflows", "Building control"
-- [x] **Wiseworx logo** (SVG, green buildings design)
+- [x] **Wiseworx logo** (SVG, purple buildings design)
   - [x] Logo at bottom of landing page
   - [x] Logo in sticky header (all pages)
   - [x] Asset created: `/public/wiseworx-logo.svg`

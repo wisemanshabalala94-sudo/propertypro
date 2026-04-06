@@ -67,13 +67,13 @@ import { AuthService } from '../../services/auth.service';
         padding: 0 1.5rem;
       }
       .intro-card {
-        background: linear-gradient(180deg, #ecfdf5 0%, #e6f7e8 100%);
+        background: linear-gradient(180deg, #F5F3FF 0%, #EDE9FE 100%);
         border-radius: 2rem;
         padding: 2.5rem;
-        box-shadow: 0 32px 70px rgba(15, 60, 47, 0.1);
+        box-shadow: 0 32px 70px rgba(124, 58, 237, 0.1);
       }
       .intro-card span {
-        color: #047857;
+        color: #7C3AED;
         font-weight: 800;
         display: inline-block;
         margin-bottom: 1rem;
@@ -85,14 +85,14 @@ import { AuthService } from '../../services/auth.service';
       }
       .intro-card p {
         margin-top: 1.25rem;
-        color: #274c3d;
+        color: #4B5563;
         line-height: 1.8;
       }
       .signup-form {
         background: white;
         border-radius: 2rem;
         padding: 2.5rem;
-        box-shadow: 0 32px 60px rgba(15, 60, 47, 0.08);
+        box-shadow: 0 32px 60px rgba(124, 58, 237, 0.08);
         display: grid;
         gap: 1rem;
       }
@@ -122,8 +122,8 @@ import { AuthService } from '../../services/auth.service';
         background: #f9fff8;
       }
       .plan-card.active {
-        border-color: #10b981;
-        box-shadow: 0 12px 30px rgba(16, 185, 129, 0.18);
+        border-color: #7C3AED;
+        box-shadow: 0 12px 30px rgba(124, 58, 237, 0.18);
       }
       .plan-card strong {
         display: block;
@@ -132,7 +132,7 @@ import { AuthService } from '../../services/auth.service';
       button {
         width: 100%;
         padding: 1rem;
-        background: #10b981;
+        background: #7C3AED;
         color: white;
         border: none;
         border-radius: 1rem;

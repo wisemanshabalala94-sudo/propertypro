@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { QwenAiService, AiMessage } from '../../core/services/qwen-ai.service';
 import { AuthService } from '../../services/auth.service';
 import { Subject } from 'rxjs';
@@ -117,6 +118,7 @@ import { Subject } from 'rxjs';
 export class AiChatWidgetComponent implements OnInit, OnDestroy {
   private ai = inject(QwenAiService);
   private auth = inject(AuthService);
+  private router = inject(Router);
   private destroy$ = new Subject<void>();
 
   protected isOpen = signal(false);
@@ -157,6 +159,17 @@ export class AiChatWidgetComponent implements OnInit, OnDestroy {
   ask(question: string): void { this.inputText.set(question); void this.send(); }
 
   handleAction(action: { label: string; action: string }): void {
-    // Route to appropriate page based on action
+    const routeMap: Record<string, string> = {
+      create_invoice: '/owner/dashboard',
+      approve_tenant: '/admin/dashboard',
+      generate_report: '/admin/dashboard',
+      pay_rent: '/tenant/dashboard',
+      maintenance: '/tenant/dashboard'
+    };
+
+    const destination = routeMap[action.action];
+    if (destination) {
+      void this.router.navigate([destination]);
+    }
   }
 }

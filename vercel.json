@@ -6,8 +6,11 @@
   "env": {
     "SUPABASE_URL": "@supabase_url",
     "SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "SUPABASE_SERVICE_KEY": "@supabase_service_key",
     "PAYSTACK_PUBLIC_KEY": "@paystack_public_key",
-    "PAYSTACK_SECRET_KEY": "@paystack_secret_key"
+    "PAYSTACK_SECRET_KEY": "@paystack_secret_key",
+    "PAYSTACK_WEBHOOK_SECRET": "@paystack_webhook_secret",
+    "QWEN_API_KEY": "@qwen_api_key"
   },
   "rewrites": [
     {
