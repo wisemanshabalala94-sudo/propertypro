@@ -278,7 +278,7 @@ interface SupabaseErrorResponse {
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
   private get supabaseUrl(): string { return environment.supabaseUrl; }
-  private get supabaseKey(): string { return environment.supabaseKey; }
+  private get supabaseKey(): string { return environment.supabaseAnonKey; }
   private get isConfigured(): boolean { return Boolean(this.supabaseUrl && this.supabaseKey); }
 
   private readonly loadingSignal = signal(false);

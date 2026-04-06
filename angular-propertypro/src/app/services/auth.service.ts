@@ -195,7 +195,7 @@ export class AuthService {
   }
 
   private hasSupabaseCredentials(): boolean {
-    return Boolean(environment.supabaseUrl && environment.supabaseKey);
+    return Boolean(environment.supabaseUrl && environment.supabaseAnonKey);
   }
 
   private hasApiUrl(): boolean {
@@ -227,7 +227,7 @@ export class AuthService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          apikey: environment.supabaseKey
+          apikey: environment.supabaseAnonKey
         },
         body: JSON.stringify(requestBody)
       });
